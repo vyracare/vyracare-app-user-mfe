@@ -7,10 +7,12 @@ import { EmployeeService } from '../../services/employee.service';
 import { EmployeeRegistrationPayload } from '../../models/employee.model';
 
 describe('EmployeeRegistrationPageComponent', () => {
-  let employeeService: jasmine.SpyObj<EmployeeService>;
+  let employeeService: jest.Mocked<EmployeeService>;
 
   beforeEach(async () => {
-    employeeService = jasmine.createSpyObj<EmployeeService>('EmployeeService', ['registerEmployee']);
+    employeeService = {
+      registerEmployee: jest.fn()
+    } as jest.Mocked<EmployeeService>;
 
     await TestBed.configureTestingModule({
       imports: [EmployeeRegistrationPageComponent, RouterTestingModule],
@@ -46,8 +48,8 @@ describe('EmployeeRegistrationPageComponent', () => {
     component.handleSubmit(payload);
 
     expect(employeeService.registerEmployee).toHaveBeenCalledWith(payload);
-    expect((component as any).loading()).toBeFalse();
-    expect((component as any).success()).toBeTrue();
+    expect((component as any).loading()).toBe(false);
+    expect((component as any).success()).toBe(true);
     expect((component as any).error()).toBeNull();
   });
 
@@ -70,8 +72,8 @@ describe('EmployeeRegistrationPageComponent', () => {
     component.handleSubmit(payload);
 
     expect(employeeService.registerEmployee).toHaveBeenCalledWith(payload);
-    expect((component as any).loading()).toBeFalse();
-    expect((component as any).success()).toBeFalse();
+    expect((component as any).loading()).toBe(false);
+    expect((component as any).success()).toBe(false);
     expect((component as any).error()).toBe('Falha ao salvar funcionario. Tente novamente.');
   });
 });

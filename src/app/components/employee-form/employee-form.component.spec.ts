@@ -33,7 +33,7 @@ describe('EmployeeFormComponent', () => {
 
     component.form.setValue(formValue);
 
-    const emitSpy = spyOn(component.formSubmit, 'emit');
+    const emitSpy = jest.spyOn(component.formSubmit, 'emit');
     component.onSubmit();
 
     expect(emitSpy).toHaveBeenCalledWith(formValue as EmployeeRegistrationPayload);
@@ -43,12 +43,12 @@ describe('EmployeeFormComponent', () => {
     const fixture = TestBed.createComponent(EmployeeFormComponent);
     const component = fixture.componentInstance;
 
-    const emitSpy = spyOn(component.formSubmit, 'emit');
+    const emitSpy = jest.spyOn(component.formSubmit, 'emit');
     component.onSubmit();
 
     expect(emitSpy).not.toHaveBeenCalled();
-    expect(component.form.controls.fullName.touched).toBeTrue();
-    expect(component.form.controls.email.touched).toBeTrue();
+    expect(component.form.controls.fullName.touched).toBe(true);
+    expect(component.form.controls.email.touched).toBe(true);
   });
 
   it('should reset the form to defaults', () => {
