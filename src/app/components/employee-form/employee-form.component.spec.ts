@@ -21,7 +21,7 @@ describe('EmployeeFormComponent', () => {
     const fixture = TestBed.createComponent(EmployeeFormComponent);
     const component = fixture.componentInstance;
 
-    const payload: EmployeeRegistrationPayload = {
+    const formValue = {
       fullName: 'Maria Silva',
       email: 'maria@empresa.com',
       role: 'Clinico',
@@ -31,12 +31,12 @@ describe('EmployeeFormComponent', () => {
       active: true
     };
 
-    component.form.setValue(payload);
+    component.form.setValue(formValue);
 
     const emitSpy = spyOn(component.formSubmit, 'emit');
     component.onSubmit();
 
-    expect(emitSpy).toHaveBeenCalledWith(payload);
+    expect(emitSpy).toHaveBeenCalledWith(formValue as EmployeeRegistrationPayload);
   });
 
   it('should mark controls as touched when form is invalid', () => {
