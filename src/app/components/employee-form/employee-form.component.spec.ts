@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { EmployeeFormComponent } from './employee-form.component';
 import { EmployeeRegistrationPayload } from '../../models/employee.model';
@@ -6,8 +5,7 @@ import { EmployeeRegistrationPayload } from '../../models/employee.model';
 describe('EmployeeFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmployeeFormComponent],
-      providers: [provideZonelessChangeDetection()]
+      imports: [EmployeeFormComponent]
     }).compileComponents();
   });
 

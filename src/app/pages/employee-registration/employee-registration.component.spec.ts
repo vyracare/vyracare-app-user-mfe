@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
@@ -16,10 +15,7 @@ describe('EmployeeRegistrationPageComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [EmployeeRegistrationPageComponent, RouterTestingModule],
-      providers: [
-        provideZonelessChangeDetection(),
-        { provide: EmployeeService, useValue: employeeService }
-      ]
+      providers: [{ provide: EmployeeService, useValue: employeeService }]
     }).compileComponents();
   });
 
@@ -43,7 +39,7 @@ describe('EmployeeRegistrationPageComponent', () => {
       active: true
     };
 
-    employeeService.registerEmployee.and.returnValue(of(void 0));
+    employeeService.registerEmployee.mockReturnValue(of(void 0));
 
     component.handleSubmit(payload);
 
@@ -67,7 +63,7 @@ describe('EmployeeRegistrationPageComponent', () => {
       active: true
     };
 
-    employeeService.registerEmployee.and.returnValue(throwError(() => new Error('fail')));
+    employeeService.registerEmployee.mockReturnValue(throwError(() => new Error('fail')));
 
     component.handleSubmit(payload);
 
