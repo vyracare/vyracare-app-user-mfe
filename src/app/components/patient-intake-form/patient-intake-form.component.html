@@ -1,0 +1,348 @@
+<form class="patient-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <fieldset [disabled]="loading" class="form-fieldset">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Ficha inicial do paciente</h2>
+        <p>Registre informacoes pessoais, historico clinico e objetivos esteticos.</p>
+      </div>
+
+      <div class="form-section">
+        <h3>Dados pessoais</h3>
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Nome completo</span>
+            <input
+              type="text"
+              placeholder="Ex: Maria Silva"
+              formControlName="fullName"
+              [class.invalid]="form.controls.fullName.touched && form.controls.fullName.invalid"
+            />
+            <small class="error" *ngIf="form.controls.fullName.touched && form.controls.fullName.invalid">
+              Informe o nome completo.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Data de nascimento</span>
+            <input
+              type="date"
+              formControlName="birthDate"
+              [class.invalid]="form.controls.birthDate.touched && form.controls.birthDate.invalid"
+            />
+            <small class="error" *ngIf="form.controls.birthDate.touched && form.controls.birthDate.invalid">
+              Informe a data de nascimento.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Genero</span>
+            <select formControlName="gender" [class.invalid]="form.controls.gender.touched && form.controls.gender.invalid">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let gender of genders" [value]="gender">{{ gender }}</option>
+            </select>
+            <small class="error" *ngIf="form.controls.gender.touched && form.controls.gender.invalid">
+              Informe o genero.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>CPF</span>
+            <input
+              type="text"
+              placeholder="000.000.000-00"
+              formControlName="cpf"
+              [class.invalid]="form.controls.cpf.touched && form.controls.cpf.invalid"
+            />
+            <small class="error" *ngIf="form.controls.cpf.touched && form.controls.cpf.invalid">
+              Informe o CPF.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>RG</span>
+            <input type="text" placeholder="Opcional" formControlName="rg" />
+          </label>
+
+          <label class="form-field">
+            <span>Email</span>
+            <input
+              type="email"
+              placeholder="email@exemplo.com"
+              formControlName="email"
+              [class.invalid]="form.controls.email.touched && form.controls.email.invalid"
+            />
+            <small class="error" *ngIf="form.controls.email.touched && form.controls.email.invalid">
+              Informe um email valido.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Telefone</span>
+            <input
+              type="tel"
+              placeholder="(11) 99999-9999"
+              formControlName="phone"
+              [class.invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+            />
+            <small class="error" *ngIf="form.controls.phone.touched && form.controls.phone.invalid">
+              Informe o telefone principal.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>WhatsApp</span>
+            <input type="tel" placeholder="Opcional" formControlName="whatsapp" />
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Endereco</h3>
+        <div class="form-grid">
+          <label class="form-field full">
+            <span>Rua</span>
+            <input
+              type="text"
+              placeholder="Ex: Rua das Flores"
+              formControlName="addressStreet"
+              [class.invalid]="form.controls.addressStreet.touched && form.controls.addressStreet.invalid"
+            />
+            <small class="error" *ngIf="form.controls.addressStreet.touched && form.controls.addressStreet.invalid">
+              Informe a rua.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Numero</span>
+            <input
+              type="text"
+              placeholder="123"
+              formControlName="addressNumber"
+              [class.invalid]="form.controls.addressNumber.touched && form.controls.addressNumber.invalid"
+            />
+            <small class="error" *ngIf="form.controls.addressNumber.touched && form.controls.addressNumber.invalid">
+              Informe o numero.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Complemento</span>
+            <input type="text" placeholder="Apto, sala, bloco" formControlName="addressComplement" />
+          </label>
+
+          <label class="form-field">
+            <span>Bairro</span>
+            <input
+              type="text"
+              placeholder="Centro"
+              formControlName="addressNeighborhood"
+              [class.invalid]="form.controls.addressNeighborhood.touched && form.controls.addressNeighborhood.invalid"
+            />
+            <small class="error" *ngIf="form.controls.addressNeighborhood.touched && form.controls.addressNeighborhood.invalid">
+              Informe o bairro.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Cidade</span>
+            <input
+              type="text"
+              placeholder="Sao Paulo"
+              formControlName="addressCity"
+              [class.invalid]="form.controls.addressCity.touched && form.controls.addressCity.invalid"
+            />
+            <small class="error" *ngIf="form.controls.addressCity.touched && form.controls.addressCity.invalid">
+              Informe a cidade.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Estado</span>
+            <select
+              formControlName="addressState"
+              [class.invalid]="form.controls.addressState.touched && form.controls.addressState.invalid"
+            >
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+            <small class="error" *ngIf="form.controls.addressState.touched && form.controls.addressState.invalid">
+              Informe o estado.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>CEP</span>
+            <input
+              type="text"
+              placeholder="00000-000"
+              formControlName="addressZip"
+              [class.invalid]="form.controls.addressZip.touched && form.controls.addressZip.invalid"
+            />
+            <small class="error" *ngIf="form.controls.addressZip.touched && form.controls.addressZip.invalid">
+              Informe o CEP.
+            </small>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Contato de emergencia</h3>
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Nome do contato</span>
+            <input
+              type="text"
+              placeholder="Ex: Ana Silva"
+              formControlName="emergencyContactName"
+              [class.invalid]="form.controls.emergencyContactName.touched && form.controls.emergencyContactName.invalid"
+            />
+            <small class="error" *ngIf="form.controls.emergencyContactName.touched && form.controls.emergencyContactName.invalid">
+              Informe o contato de emergencia.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Telefone do contato</span>
+            <input
+              type="tel"
+              placeholder="(11) 97777-6666"
+              formControlName="emergencyContactPhone"
+              [class.invalid]="form.controls.emergencyContactPhone.touched && form.controls.emergencyContactPhone.invalid"
+            />
+            <small class="error" *ngIf="form.controls.emergencyContactPhone.touched && form.controls.emergencyContactPhone.invalid">
+              Informe o telefone de emergencia.
+            </small>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Anamnese e objetivos</h3>
+        <div class="form-grid">
+          <label class="form-field full">
+            <span>Queixa principal</span>
+            <textarea
+              rows="3"
+              placeholder="Descreva a principal queixa estetica."
+              formControlName="mainComplaint"
+              [class.invalid]="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid"
+            ></textarea>
+            <small class="error" *ngIf="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid">
+              Informe a queixa principal.
+            </small>
+          </label>
+
+          <label class="form-field full">
+            <span>Objetivos do tratamento</span>
+            <textarea
+              rows="3"
+              placeholder="Resultados que o paciente espera."
+              formControlName="objectives"
+              [class.invalid]="form.controls.objectives.touched && form.controls.objectives.invalid"
+            ></textarea>
+            <small class="error" *ngIf="form.controls.objectives.touched && form.controls.objectives.invalid">
+              Informe os objetivos.
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span>Condicoes medicas</span>
+            <input type="text" placeholder="Ex: hipertensao" formControlName="medicalConditions" />
+          </label>
+
+          <label class="form-field">
+            <span>Alergias</span>
+            <input type="text" placeholder="Ex: cosmeticos, medicamentos" formControlName="allergies" />
+          </label>
+
+          <label class="form-field">
+            <span>Medicacoes em uso</span>
+            <input type="text" placeholder="Ex: suplementos, remedios continuos" formControlName="medications" />
+          </label>
+
+          <label class="form-field">
+            <span>Cirurgias anteriores</span>
+            <input type="text" placeholder="Ex: cirurgia plastica" formControlName="previousSurgeries" />
+          </label>
+
+          <label class="form-field">
+            <span>Procedimentos esteticos anteriores</span>
+            <input type="text" placeholder="Ex: botox, peeling" formControlName="aestheticProcedures" />
+          </label>
+
+          <label class="form-field">
+            <span>Tipo de pele</span>
+            <select formControlName="skinType">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let type of skinTypes" [value]="type">{{ type }}</option>
+            </select>
+          </label>
+
+          <label class="form-field">
+            <span>Exposicao solar</span>
+            <select formControlName="sunExposure">
+              <option value="" disabled>Selecione</option>
+              <option *ngFor="let level of sunExposureLevels" [value]="level">{{ level }}</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Habitos e condicoes</h3>
+        <div class="toggle-grid">
+          <label class="toggle-card">
+            <input type="checkbox" formControlName="smoking" />
+            <div>
+              <strong>Tabagismo</strong>
+              <p>Paciente fuma regularmente?</p>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" formControlName="alcohol" />
+            <div>
+              <strong>Consumo de alcool</strong>
+              <p>Paciente consome alcool com frequencia?</p>
+            </div>
+          </label>
+
+          <label class="toggle-card">
+            <input type="checkbox" formControlName="pregnantOrBreastfeeding" />
+            <div>
+              <strong>Gestacao ou lactacao</strong>
+              <p>Paciente esta gestante ou amamentando?</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Observacoes adicionais</h3>
+        <div class="form-grid">
+          <label class="form-field full">
+            <span>Notas do profissional</span>
+            <textarea rows="3" placeholder="Preferencias, observacoes e cuidados" formControlName="notes"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <label class="consent-row">
+        <input type="checkbox" formControlName="consent" />
+        <span>Confirmo que as informacoes acima sao verdadeiras e autorizo o uso para fins clinicos.</span>
+      </label>
+      <small class="error" *ngIf="form.controls.consent.touched && form.controls.consent.invalid">
+        Confirme o consentimento do paciente.
+      </small>
+
+      <div class="form-actions">
+        <button type="button" class="ghost" (click)="resetForm()">Limpar</button>
+        <button type="submit" class="primary" [disabled]="loading">
+          {{ loading ? 'Salvando...' : 'Salvar ficha' }}
+        </button>
+      </div>
+
+      <p class="error-banner" *ngIf="error">{{ error }}</p>
+    </div>
+  </fieldset>
+</form>
