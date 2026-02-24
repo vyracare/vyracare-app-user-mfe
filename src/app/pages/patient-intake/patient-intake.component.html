@@ -1,0 +1,53 @@
+<section class="patient-page">
+  <nav class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a>
+    <span>/</span>
+    <span>Ficha inicial do paciente</span>
+  </nav>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Atendimento e estetica</span>
+      <h1>Ficha inicial do paciente</h1>
+      <p>Centralize informacoes clinicas, esteticas e objetivos para um plano seguro.</p>
+    </div>
+    <div class="header-tag">
+      <span>Dados confidenciais</span>
+      <strong>Padrao LGPD</strong>
+    </div>
+  </header>
+
+  <div class="page-content">
+    <vyracare-patient-intake-form
+      [loading]="loading()"
+      [error]="error()"
+      (formSubmit)="handleSubmit($event)"
+    ></vyracare-patient-intake-form>
+
+    <aside class="page-side">
+      <div class="side-card">
+        <h3>Boas praticas</h3>
+        <ul>
+          <li>Confirme contato e emergencia antes do procedimento.</li>
+          <li>Registre historico clinico e alergias.</li>
+          <li>Atualize a ficha a cada retorno.</li>
+        </ul>
+      </div>
+      <div class="side-card accent">
+        <h3>Proximos passos</h3>
+        <ul>
+          <li>Defina o protocolo estetico personalizado.</li>
+          <li>Apresente termos de consentimento adicionais.</li>
+          <li>Agende o acompanhamento do resultado.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="success-card" *ngIf="success()">
+    <span class="badge">Concluido</span>
+    <div>
+      <strong>Ficha registrada</strong>
+      <p>O prontuario inicial do paciente foi salvo com sucesso.</p>
+    </div>
+  </div>
+</section>

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { EmployeeRegistrationPageComponent } from './pages/employee-registration/employee-registration.component';
+import { PatientIntakePageComponent } from './pages/patient-intake/patient-intake.component';
 
 export const routes: Routes = [
-  { path: '', component: EmployeeRegistrationPageComponent }
+  { path: '', component: PatientIntakePageComponent }
 ];
 
 export const ROUTES: Routes = routes;
