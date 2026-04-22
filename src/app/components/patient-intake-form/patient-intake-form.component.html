@@ -14,7 +14,6 @@
             label="Nome completo"
             placeholder="Ex: Maria Silva"
             formControlName="fullName"
-            [required]="true"
             [error]="form.controls.fullName.touched && form.controls.fullName.invalid ? 'Informe o nome completo.' : ''"
           ></vc-input>
 
@@ -24,7 +23,6 @@
             type="date"
             mask="date"
             formControlName="birthDate"
-            [required]="true"
             [error]="
               form.controls.birthDate.touched && form.controls.birthDate.invalid
                 ? 'Informe a data de nascimento.'
@@ -37,7 +35,6 @@
             label="Genero"
             placeholder="Selecione"
             formControlName="gender"
-            [required]="true"
             [options]="genderOptions"
             [error]="form.controls.gender.touched && form.controls.gender.invalid ? 'Informe o genero.' : ''"
           ></vc-select>
@@ -47,7 +44,6 @@
             label="CPF"
             placeholder="000.000.000-00"
             formControlName="cpf"
-            [required]="true"
             [error]="form.controls.cpf.touched && form.controls.cpf.invalid ? 'Informe o CPF.' : ''"
           ></vc-input>
 
@@ -60,7 +56,6 @@
             mask="email"
             placeholder="email@exemplo.com"
             formControlName="email"
-            [required]="true"
             [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um email valido.' : ''"
           ></vc-input>
 
@@ -71,7 +66,6 @@
             mask="phone"
             placeholder="(11) 99999-9999"
             formControlName="phone"
-            [required]="true"
             [error]="form.controls.phone.touched && form.controls.phone.invalid ? 'Informe o telefone principal.' : ''"
           ></vc-input>
 
@@ -95,7 +89,6 @@
               label="Rua"
               placeholder="Ex: Rua das Flores"
               formControlName="addressStreet"
-              [required]="true"
               [error]="form.controls.addressStreet.touched && form.controls.addressStreet.invalid ? 'Informe a rua.' : ''"
             ></vc-input>
           </div>
@@ -105,7 +98,6 @@
             label="Numero"
             placeholder="123"
             formControlName="addressNumber"
-            [required]="true"
             [error]="form.controls.addressNumber.touched && form.controls.addressNumber.invalid ? 'Informe o numero.' : ''"
           ></vc-input>
 
@@ -121,7 +113,6 @@
             label="Bairro"
             placeholder="Centro"
             formControlName="addressNeighborhood"
-            [required]="true"
             [error]="
               form.controls.addressNeighborhood.touched && form.controls.addressNeighborhood.invalid
                 ? 'Informe o bairro.'
@@ -134,7 +125,6 @@
             label="Cidade"
             placeholder="Sao Paulo"
             formControlName="addressCity"
-            [required]="true"
             [error]="form.controls.addressCity.touched && form.controls.addressCity.invalid ? 'Informe a cidade.' : ''"
           ></vc-input>
 
@@ -143,7 +133,6 @@
             label="Estado"
             placeholder="Selecione"
             formControlName="addressState"
-            [required]="true"
             [options]="stateOptions"
             [error]="form.controls.addressState.touched && form.controls.addressState.invalid ? 'Informe o estado.' : ''"
           ></vc-select>
@@ -153,7 +142,6 @@
             label="CEP"
             placeholder="00000-000"
             formControlName="addressZip"
-            [required]="true"
             [error]="form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe o CEP.' : ''"
           ></vc-input>
         </div>
@@ -167,7 +155,6 @@
             label="Nome do contato"
             placeholder="Ex: Ana Silva"
             formControlName="emergencyContactName"
-            [required]="true"
             [error]="
               form.controls.emergencyContactName.touched && form.controls.emergencyContactName.invalid
                 ? 'Informe o contato de emergencia.'
@@ -182,7 +169,6 @@
             mask="phone"
             placeholder="(11) 97777-6666"
             formControlName="emergencyContactPhone"
-            [required]="true"
             [error]="
               form.controls.emergencyContactPhone.touched && form.controls.emergencyContactPhone.invalid
                 ? 'Informe o telefone de emergencia.'
