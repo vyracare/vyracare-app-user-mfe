@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { VcButtonComponent } from '@vyracare/design-system';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
 
 @Component({
   selector: 'vyracare-patient-intake-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, VcButtonComponent],
   templateUrl: './patient-intake-form.component.html',
   styleUrl: './patient-intake-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
