@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { VcCardComponent, VcHeadingComponent, VcTextComponent } from '@vyracare/design-system';
 import { PatientIntakeFormComponent } from '../../components/patient-intake-form/patient-intake-form.component';
 import { PatientService } from '../../services/patient.service';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
@@ -8,7 +9,7 @@ import { PatientIntakePayload } from '../../models/patient-intake.model';
 @Component({
   selector: 'vyracare-patient-intake-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, PatientIntakeFormComponent],
+  imports: [CommonModule, RouterLink, PatientIntakeFormComponent, VcCardComponent, VcHeadingComponent, VcTextComponent],
   templateUrl: './patient-intake.component.html',
   styleUrl: './patient-intake.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
