@@ -1,13 +1,28 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { VcButtonComponent } from '@vyracare/design-system';
+import {
+  VcButtonComponent,
+  VcHeadingComponent,
+  VcInputComponent,
+  VcSelectComponent,
+  VcTextComponent
+} from '@vyracare/design-system';
+import type { VcSelectOption } from '@vyracare/design-system';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
 
 @Component({
   selector: 'vyracare-patient-intake-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, VcButtonComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    VcButtonComponent,
+    VcHeadingComponent,
+    VcInputComponent,
+    VcSelectComponent,
+    VcTextComponent
+  ],
   templateUrl: './patient-intake-form.component.html',
   styleUrl: './patient-intake-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,6 +40,13 @@ export class PatientIntakeFormComponent {
     'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ];
+  readonly genderOptions: VcSelectOption[] = this.genders.map((gender) => ({ label: gender, value: gender }));
+  readonly skinTypeOptions: VcSelectOption[] = this.skinTypes.map((type) => ({ label: type, value: type }));
+  readonly sunExposureOptions: VcSelectOption[] = this.sunExposureLevels.map((level) => ({
+    label: level,
+    value: level
+  }));
+  readonly stateOptions: VcSelectOption[] = this.states.map((state) => ({ label: state, value: state }));
 
   readonly form: FormGroup<{
     fullName: FormControl<string>;
