@@ -59,7 +59,7 @@ describe('PatientService', () => {
 
     service.registerPatient(payload).subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/register`);
+    const req = httpMock.expectOne(`${environment.clientApiUrl}/patients`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     req.flush(null);
