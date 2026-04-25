@@ -8,11 +8,11 @@ import { EmployeeRegistrationPayload } from '../models/employee.model';
   providedIn: 'root'
 })
 export class EmployeeService {
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.clientApiUrl;
 
   constructor(private readonly http: HttpClient) {}
 
   registerEmployee(payload: EmployeeRegistrationPayload): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/register`, payload);
+    return this.http.post<void>(`${this.apiUrl}/employees`, payload);
   }
 }
