@@ -8,11 +8,11 @@ import { PatientIntakePayload } from '../models/patient-intake.model';
   providedIn: 'root'
 })
 export class PatientService {
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.clientApiUrl;
 
   constructor(private readonly http: HttpClient) {}
 
   registerPatient(payload: PatientIntakePayload): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/register`, payload);
+    return this.http.post<void>(`${this.apiUrl}/patients`, payload);
   }
 }
