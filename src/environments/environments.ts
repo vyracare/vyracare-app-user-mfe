@@ -1,5 +1,5 @@
-﻿export const environment = {
+export const environment = {
   production: false,
   authApiUrl: 'https://ef39m2gyya.execute-api.us-east-1.amazonaws.com/api/auth',
-  clientApiUrl: 'https://4uh1kerr9a.execute-api.us-east-1.amazonaws.com/api/client'
+  clientApiUrl: 'https://1vd2y2p3ni.execute-api.us-east-1.amazonaws.com/api/client'
 };
