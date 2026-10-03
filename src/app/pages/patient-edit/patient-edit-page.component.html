@@ -1,0 +1,58 @@
+<main class="edit-page">
+  <nav class="breadcrumb"><a routerLink="/dashboard">Dashboard</a><span>/</span><a routerLink="/pacientes">Pacientes</a><span>/</span><span>Ficha</span></nav>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Prontuario do paciente</span>
+      <vc-heading [level]="1">{{ patient()?.fullName || 'Ficha do paciente' }}</vc-heading>
+      <vc-text [muted]="true">
+        {{ isAdministrator ? 'Edite os dados cadastrais e clinicos.' : 'A ficha e somente leitura; voce pode registrar notas profissionais.' }}
+      </vc-text>
+    </div>
+    <div class="header-actions">
+      <vc-button type="button" variant="secondary" (click)="historyModalOpen.set(true)">Historico</vc-button>
+      <vc-button type="button" (click)="noteModalOpen.set(true)">Adicionar nota</vc-button>
+    </div>
+  </header>
+
+  @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
+  @if (success()) { <p class="message success" role="status">{{ success() }}</p> }
+  @if (loading()) {
+    <p class="loading">Carregando ficha...</p>
+  } @else if (patient(); as currentPatient) {
+    <vyracare-patient-intake-form
+      [initialValue]="formValue(currentPatient)"
+      [readOnly]="!isAdministrator"
+      [loading]="saving()"
+      [error]="error() || null"
+      submitLabel="Salvar alteracoes"
+      (formSubmit)="update($event)"
+    ></vyracare-patient-intake-form>
+  }
+
+  @if (noteModalOpen()) {
+    <div class="modal-backdrop" (click)="noteModalOpen.set(false)">
+      <section class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <vc-heading [level]="2">Adicionar nota profissional</vc-heading>
+        <label>Procedimento <input #procedureInput type="text" /></label>
+        <label>Nota <textarea #noteInput rows="5"></textarea></label>
+        <div class="modal-actions">
+          <vc-button type="button" variant="secondary" (click)="noteModalOpen.set(false)">Cancelar</vc-button>
+          <vc-button type="button" (click)="saveNote(noteInput.value, procedureInput.value)">Salvar nota</vc-button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (historyModalOpen()) {
+    <div class="modal-backdrop" (click)="historyModalOpen.set(false)">
+      <section class="modal history" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <vc-heading [level]="2">Historico profissional</vc-heading>
+        @if (notes().length === 0) { <p>Nenhuma nota adicionada.</p> }
+        @for (note of notes(); track note.id) {
+          <article><strong>{{ note.procedureName || 'Atendimento' }}</strong><time>{{ note.createdAt | date:'dd/MM/yyyy HH:mm' }}</time><p>{{ note.content }}</p><small>{{ note.authorName }}</small></article>
+        }
+        <div class="modal-actions"><vc-button type="button" (click)="historyModalOpen.set(false)">Fechar</vc-button></div>
+      </section>
+    </div>
+  }
+</main>

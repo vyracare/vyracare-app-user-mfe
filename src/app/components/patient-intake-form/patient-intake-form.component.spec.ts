@@ -147,4 +147,21 @@ describe('PatientIntakeFormComponent', () => {
       notes: ''
     });
   });
+
+  it('should apply initial values, restore them and control read-only mode', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    const initial = { ...component.form.getRawValue(), fullName: 'Maria Silva', cpf: '123' };
+    component.initialValue = initial;
+    component.readOnly = true;
+    component.ngOnChanges({ initialValue: {} as any, readOnly: {} as any });
+    expect(component.form.getRawValue().fullName).toBe('Maria Silva');
+    expect(component.form.disabled).toBe(true);
+
+    component.readOnly = false;
+    component.ngOnChanges({ readOnly: {} as any });
+    expect(component.form.enabled).toBe(true);
+    component.form.patchValue({ fullName: 'Alterado' });
+    component.resetForm();
+    expect(component.form.getRawValue().fullName).toBe('Maria Silva');
+  });
 });

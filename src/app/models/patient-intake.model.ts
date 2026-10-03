@@ -31,3 +31,24 @@ export interface PatientIntakePayload {
   consent: boolean;
   notes?: string;
 }
+
+export interface Patient extends PatientIntakePayload {
+  id: string;
+  professionalNotes: PatientNote[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PatientNote {
+  id: string;
+  content: string;
+  procedureName?: string;
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface AddPatientNotePayload {
+  content: string;
+  procedureName?: string;
+}

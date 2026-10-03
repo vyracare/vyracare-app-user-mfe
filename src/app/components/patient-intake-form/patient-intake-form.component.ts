@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -27,9 +27,12 @@ import { PatientIntakePayload } from '../../models/patient-intake.model';
   styleUrl: './patient-intake-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatientIntakeFormComponent {
+export class PatientIntakeFormComponent implements OnChanges {
   @Input() loading = false;
   @Input() error: string | null = null;
+  @Input() initialValue: PatientIntakePayload | null = null;
+  @Input() readOnly = false;
+  @Input() submitLabel = 'Salvar ficha';
   @Output() formSubmit = new EventEmitter<PatientIntakePayload>();
 
   readonly genders = ['Feminino', 'Masculino', 'Nao-binario', 'Prefiro nao informar'];
@@ -152,6 +155,15 @@ export class PatientIntakeFormComponent {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialValue'] && this.initialValue) {
+      this.form.patchValue(this.initialValue);
+    }
+    if (changes['readOnly']) {
+      this.readOnly ? this.form.disable({ emitEvent: false }) : this.form.enable({ emitEvent: false });
+    }
+  }
+
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -162,6 +174,10 @@ export class PatientIntakeFormComponent {
   }
 
   resetForm() {
+    if (this.initialValue) {
+      this.form.reset(this.initialValue);
+      return;
+    }
     this.form.reset({
       fullName: '',
       birthDate: '',

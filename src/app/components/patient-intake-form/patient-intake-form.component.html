@@ -308,10 +308,12 @@
       </small>
 
       <div class="form-actions">
-        <vc-button type="button" variant="ghost" (click)="resetForm()">Limpar</vc-button>
-        <vc-button type="submit" [loading]="loading" [disabled]="loading">
-          {{ loading ? 'Salvando...' : 'Salvar ficha' }}
-        </vc-button>
+        @if (!readOnly) {
+          <vc-button type="button" variant="ghost" (click)="resetForm()">Restaurar</vc-button>
+          <vc-button type="submit" [loading]="loading" [disabled]="loading">
+            {{ loading ? 'Salvando...' : submitLabel }}
+          </vc-button>
+        }
       </div>
 
       <p class="error-banner" *ngIf="error">{{ error }}</p>
