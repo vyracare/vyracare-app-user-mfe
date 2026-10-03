@@ -28,10 +28,8 @@ describe('PatientService', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -99,5 +97,12 @@ describe('PatientService', () => {
     const list = httpMock.expectOne(`${environment.clientApiUrl}/patients/patient-1/notes`);
     expect(list.request.method).toBe('GET');
     list.flush([]);
+  });
+
+  it('should lookup a normalized postal code', () => {
+    service.getAddressByPostalCode('01001-001').subscribe();
+    const request = httpMock.expectOne(`${environment.clientApiUrl}/addresses/postal-code/01001001`);
+    expect(request.request.method).toBe('GET');
+    request.flush({});
   });
 });

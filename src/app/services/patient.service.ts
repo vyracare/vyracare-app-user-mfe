@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
-import { AddPatientNotePayload, Patient, PatientIntakePayload, PatientNote } from '../models/patient-intake.model';
+import { AddPatientNotePayload, Patient, PatientIntakePayload, PatientNote, PostalCodeAddress } from '../models/patient-intake.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,11 @@ export class PatientService {
 
   updatePatient(id: string, payload: PatientIntakePayload): Observable<Patient> {
     return this.http.put<Patient>(`${this.apiUrl}/patients/${id}`, payload);
+  }
+
+  getAddressByPostalCode(postalCode: string): Observable<PostalCodeAddress> {
+    const normalized = postalCode.replace(/\D/g, '');
+    return this.http.get<PostalCodeAddress>(`${this.apiUrl}/addresses/postal-code/${normalized}`);
   }
 
   addNote(patientId: string, payload: AddPatientNotePayload): Observable<PatientNote> {

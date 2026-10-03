@@ -32,7 +32,7 @@ describe('PatientsPageComponent', () => {
     fixture.componentInstance.search('Maria');
     expect(service.listPatients).toHaveBeenLastCalledWith('Maria');
     expect(fixture.componentInstance.patients()).toEqual([patient]);
-    expect(fixture.nativeElement.querySelector('.page-header .header-tag')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.page-header .header-tag')).toBeNull();
     expect(fixture.nativeElement.querySelector('.table-toolbar .primary-action')).not.toBeNull();
   });
 

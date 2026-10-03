@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, signal, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   VcButtonComponent,
+  VcCheckboxComponent,
   VcHeadingComponent,
   VcInputComponent,
   VcSelectComponent,
@@ -10,6 +11,7 @@ import {
 } from '@vyracare/design-system';
 import type { VcSelectOption } from '@vyracare/design-system';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'vyracare-patient-intake-form',
@@ -18,6 +20,7 @@ import { PatientIntakePayload } from '../../models/patient-intake.model';
     CommonModule,
     ReactiveFormsModule,
     VcButtonComponent,
+    VcCheckboxComponent,
     VcHeadingComponent,
     VcInputComponent,
     VcSelectComponent,
@@ -34,6 +37,9 @@ export class PatientIntakeFormComponent implements OnChanges {
   @Input() readOnly = false;
   @Input() submitLabel = 'Salvar ficha';
   @Output() formSubmit = new EventEmitter<PatientIntakePayload>();
+  readonly postalCodeLoading = signal(false);
+  readonly postalCodeFeedback = signal('');
+  readonly postalCodeError = signal('');
 
   readonly genders = ['Feminino', 'Masculino', 'Nao-binario', 'Prefiro nao informar'];
   readonly skinTypes = ['Normal', 'Seca', 'Oleosa', 'Mista', 'Sensivel'];
@@ -56,10 +62,8 @@ export class PatientIntakeFormComponent implements OnChanges {
     birthDate: FormControl<string>;
     gender: FormControl<string>;
     cpf: FormControl<string>;
-    rg: FormControl<string>;
     email: FormControl<string>;
     phone: FormControl<string>;
-    whatsapp: FormControl<string>;
     addressStreet: FormControl<string>;
     addressNumber: FormControl<string>;
     addressComplement: FormControl<string>;
@@ -85,7 +89,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     notes: FormControl<string>;
   }>;
 
-  constructor(private readonly fb: NonNullableFormBuilder) {
+  constructor(private readonly fb: NonNullableFormBuilder, private readonly patientService: PatientService) {
     this.form = this.fb.group({
       fullName: this.fb.control('', {
         validators: [Validators.required, Validators.minLength(3)]
@@ -97,16 +101,14 @@ export class PatientIntakeFormComponent implements OnChanges {
         validators: [Validators.required]
       }),
       cpf: this.fb.control('', {
-        validators: [Validators.required]
+        validators: [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]
       }),
-      rg: this.fb.control(''),
       email: this.fb.control('', {
         validators: [Validators.required, Validators.email]
       }),
       phone: this.fb.control('', {
         validators: [Validators.required]
       }),
-      whatsapp: this.fb.control(''),
       addressStreet: this.fb.control('', {
         validators: [Validators.required]
       }),
@@ -124,7 +126,7 @@ export class PatientIntakeFormComponent implements OnChanges {
         validators: [Validators.required]
       }),
       addressZip: this.fb.control('', {
-        validators: [Validators.required]
+        validators: [Validators.required, Validators.pattern(/^\d{5}-\d{3}$/)]
       }),
       emergencyContactName: this.fb.control('', {
         validators: [Validators.required]
@@ -173,6 +175,35 @@ export class PatientIntakeFormComponent implements OnChanges {
     this.formSubmit.emit(this.form.getRawValue());
   }
 
+  lookupPostalCode(postalCode: string): void {
+    if (this.readOnly) return;
+    const normalized = postalCode.replace(/\D/g, '');
+    this.postalCodeFeedback.set('');
+    this.postalCodeError.set('');
+    if (normalized.length !== 8) {
+      this.form.controls.addressZip.markAsTouched();
+      return;
+    }
+    this.postalCodeLoading.set(true);
+    this.patientService.getAddressByPostalCode(normalized).subscribe({
+      next: address => {
+        this.form.patchValue({
+          addressStreet: address.street,
+          addressNeighborhood: address.neighborhood,
+          addressCity: address.city,
+          addressState: address.state,
+          addressComplement: this.form.controls.addressComplement.value || address.complement || ''
+        });
+        this.postalCodeLoading.set(false);
+        this.postalCodeFeedback.set('Endereco localizado pelos Correios.');
+      },
+      error: error => {
+        this.postalCodeLoading.set(false);
+        this.postalCodeError.set(error?.status === 404 ? 'CEP nao encontrado.' : 'Nao foi possivel consultar o CEP agora.');
+      }
+    });
+  }
+
   resetForm() {
     if (this.initialValue) {
       this.form.reset(this.initialValue);
@@ -183,10 +214,8 @@ export class PatientIntakeFormComponent implements OnChanges {
       birthDate: '',
       gender: '',
       cpf: '',
-      rg: '',
       email: '',
       phone: '',
-      whatsapp: '',
       addressStreet: '',
       addressNumber: '',
       addressComplement: '',

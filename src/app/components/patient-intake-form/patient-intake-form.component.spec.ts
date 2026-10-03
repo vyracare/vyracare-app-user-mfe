@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { PatientIntakeFormComponent } from './patient-intake-form.component';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
+import { of, throwError } from 'rxjs';
+import { PatientService } from '../../services/patient.service';
 
 describe('PatientIntakeFormComponent', () => {
+  const patientService = { getAddressByPostalCode: jest.fn() };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PatientIntakeFormComponent]
+      imports: [PatientIntakeFormComponent],
+      providers: [{ provide: PatientService, useValue: patientService }]
     }).compileComponents();
   });
 
@@ -24,10 +28,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -82,10 +84,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -118,10 +118,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '',
       gender: '',
       cpf: '',
-      rg: '',
       email: '',
       phone: '',
-      whatsapp: '',
       addressStreet: '',
       addressNumber: '',
       addressComplement: '',
@@ -146,6 +144,26 @@ describe('PatientIntakeFormComponent', () => {
       consent: false,
       notes: ''
     });
+  });
+
+  it('should fill address after postal code lookup', () => {
+    patientService.getAddressByPostalCode.mockReturnValue(of({
+      postalCode: '01001001', street: 'Praca da Se', neighborhood: 'Se', city: 'Sao Paulo', state: 'SP'
+    }));
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.lookupPostalCode('01001-001');
+    expect(patientService.getAddressByPostalCode).toHaveBeenCalledWith('01001001');
+    expect(component.form.controls.addressStreet.value).toBe('Praca da Se');
+    expect(component.postalCodeFeedback()).toContain('Correios');
+  });
+
+  it('should validate and handle postal code errors', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.lookupPostalCode('123');
+    expect(component.form.controls.addressZip.touched).toBe(true);
+    patientService.getAddressByPostalCode.mockReturnValue(throwError(() => ({ status: 404 })));
+    component.lookupPostalCode('01001-001');
+    expect(component.postalCodeError()).toBe('CEP nao encontrado.');
   });
 
   it('should apply initial values, restore them and control read-only mode', () => {

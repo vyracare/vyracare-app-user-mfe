@@ -42,12 +42,11 @@
           <vc-input
             id="patient-cpf"
             label="CPF"
+            mask="cpf"
             placeholder="000.000.000-00"
             formControlName="cpf"
             [error]="form.controls.cpf.touched && form.controls.cpf.invalid ? 'Informe o CPF.' : ''"
           ></vc-input>
-
-          <vc-input id="patient-rg" label="RG" placeholder="Opcional" formControlName="rg"></vc-input>
 
           <vc-input
             id="patient-email"
@@ -69,20 +68,24 @@
             [error]="form.controls.phone.touched && form.controls.phone.invalid ? 'Informe o telefone principal.' : ''"
           ></vc-input>
 
-          <vc-input
-            id="patient-whatsapp"
-            label="WhatsApp"
-            type="tel"
-            mask="phone"
-            placeholder="Opcional"
-            formControlName="whatsapp"
-          ></vc-input>
         </div>
       </div>
 
       <div class="form-section">
         <vc-heading [level]="3">Endereco</vc-heading>
         <div class="form-grid">
+          <div class="full postal-code-row">
+            <vc-input
+              id="patient-address-zip"
+              label="CEP"
+              mask="postalCode"
+              placeholder="00000-000"
+              formControlName="addressZip"
+              [hint]="postalCodeLoading() ? 'Consultando os Correios...' : postalCodeFeedback()"
+              [error]="postalCodeError() || (form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe um CEP valido.' : '')"
+              (blurred)="lookupPostalCode($event)"
+            ></vc-input>
+          </div>
           <div class="full">
             <vc-input
               id="patient-address-street"
@@ -137,13 +140,6 @@
             [error]="form.controls.addressState.touched && form.controls.addressState.invalid ? 'Informe o estado.' : ''"
           ></vc-select>
 
-          <vc-input
-            id="patient-address-zip"
-            label="CEP"
-            placeholder="00000-000"
-            formControlName="addressZip"
-            [error]="form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe o CEP.' : ''"
-          ></vc-input>
         </div>
       </div>
 
@@ -207,40 +203,11 @@
             </small>
           </label>
 
-          <vc-input
-            id="patient-medical-conditions"
-            label="Condicoes medicas"
-            placeholder="Ex: hipertensao"
-            formControlName="medicalConditions"
-          ></vc-input>
-
-          <vc-input
-            id="patient-allergies"
-            label="Alergias"
-            placeholder="Ex: cosmeticos, medicamentos"
-            formControlName="allergies"
-          ></vc-input>
-
-          <vc-input
-            id="patient-medications"
-            label="Medicacoes em uso"
-            placeholder="Ex: suplementos, remedios continuos"
-            formControlName="medications"
-          ></vc-input>
-
-          <vc-input
-            id="patient-previous-surgeries"
-            label="Cirurgias anteriores"
-            placeholder="Ex: cirurgia plastica"
-            formControlName="previousSurgeries"
-          ></vc-input>
-
-          <vc-input
-            id="patient-aesthetic-procedures"
-            label="Procedimentos esteticos anteriores"
-            placeholder="Ex: botox, peeling"
-            formControlName="aestheticProcedures"
-          ></vc-input>
+          <label class="form-field full"><span>Condicoes medicas</span><textarea rows="3" placeholder="Ex: hipertensao" formControlName="medicalConditions"></textarea></label>
+          <label class="form-field full"><span>Alergias</span><textarea rows="3" placeholder="Ex: cosmeticos, medicamentos" formControlName="allergies"></textarea></label>
+          <label class="form-field full"><span>Medicacoes em uso</span><textarea rows="3" placeholder="Ex: suplementos, remedios continuos" formControlName="medications"></textarea></label>
+          <label class="form-field full"><span>Cirurgias anteriores</span><textarea rows="3" placeholder="Ex: cirurgia plastica" formControlName="previousSurgeries"></textarea></label>
+          <label class="form-field full"><span>Procedimentos esteticos anteriores</span><textarea rows="3" placeholder="Ex: botox, peeling" formControlName="aestheticProcedures"></textarea></label>
 
           <vc-select
             id="patient-skin-type"
@@ -263,29 +230,9 @@
       <div class="form-section">
         <vc-heading [level]="3">Habitos e condicoes</vc-heading>
         <div class="toggle-grid">
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="smoking" />
-            <div>
-              <strong>Tabagismo</strong>
-              <p>Paciente fuma regularmente?</p>
-            </div>
-          </label>
-
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="alcohol" />
-            <div>
-              <strong>Consumo de alcool</strong>
-              <p>Paciente consome alcool com frequencia?</p>
-            </div>
-          </label>
-
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="pregnantOrBreastfeeding" />
-            <div>
-              <strong>Gestacao ou lactacao</strong>
-              <p>Paciente esta gestante ou amamentando?</p>
-            </div>
-          </label>
+          <vc-checkbox label="Tabagismo" description="Paciente fuma regularmente?" formControlName="smoking"></vc-checkbox>
+          <vc-checkbox label="Consumo de alcool" description="Paciente consome alcool com frequencia?" formControlName="alcohol"></vc-checkbox>
+          <vc-checkbox label="Gestacao ou lactacao" description="Paciente esta gestante ou amamentando?" formControlName="pregnantOrBreastfeeding"></vc-checkbox>
         </div>
       </div>
 
@@ -299,13 +246,13 @@
         </div>
       </div>
 
-      <label class="consent-row">
-        <input type="checkbox" formControlName="consent" />
-        <span>Confirmo que as informacoes acima sao verdadeiras e autorizo o uso para fins clinicos.</span>
-      </label>
-      <small class="error" *ngIf="form.controls.consent.touched && form.controls.consent.invalid">
-        Confirme o consentimento do paciente.
-      </small>
+      <vc-checkbox
+        id="patient-consent"
+        label="Consentimento do paciente"
+        description="Confirmo que as informacoes acima sao verdadeiras e autorizo o uso para fins clinicos."
+        formControlName="consent"
+        [error]="form.controls.consent.touched && form.controls.consent.invalid ? 'Confirme o consentimento do paciente.' : ''"
+      ></vc-checkbox>
 
       <div class="form-actions">
         @if (!readOnly) {

@@ -3,10 +3,8 @@ export interface PatientIntakePayload {
   birthDate: string;
   gender: string;
   cpf: string;
-  rg?: string;
   email: string;
   phone: string;
-  whatsapp?: string;
   addressStreet: string;
   addressNumber: string;
   addressComplement?: string;
@@ -30,6 +28,15 @@ export interface PatientIntakePayload {
   pregnantOrBreastfeeding: boolean;
   consent: boolean;
   notes?: string;
+}
+
+export interface PostalCodeAddress {
+  postalCode: string;
+  street: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
 }
 
 export interface Patient extends PatientIntakePayload {

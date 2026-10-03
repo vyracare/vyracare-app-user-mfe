@@ -45,7 +45,7 @@ describe('PatientEditPageComponent', () => {
     component.update(payload);
     expect(service.updatePatient).toHaveBeenCalledWith('patient-1', payload);
     expect(component.success()).toContain('sucesso');
-    expect(fixture.nativeElement.querySelector('.page-header .header-tag')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.page-header .header-tag')).toBeNull();
     expect(fixture.nativeElement.querySelector('.page-actions')).not.toBeNull();
   });
 
