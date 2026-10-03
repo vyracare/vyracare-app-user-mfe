@@ -34,8 +34,10 @@ describe('PatientEditPageComponent', () => {
   });
 
   it('should load and update the patient as administrator', () => {
-    const component = TestBed.createComponent(PatientEditPageComponent).componentInstance;
+    const fixture = TestBed.createComponent(PatientEditPageComponent);
+    const component = fixture.componentInstance;
     component.ngOnInit();
+    fixture.detectChanges();
     expect(component.patient()).toEqual(patient);
     const payload = component.formValue(patient);
     expect((payload as PatientIntakePayload).fullName).toBe('Maria Silva');
@@ -43,6 +45,8 @@ describe('PatientEditPageComponent', () => {
     component.update(payload);
     expect(service.updatePatient).toHaveBeenCalledWith('patient-1', payload);
     expect(component.success()).toContain('sucesso');
+    expect(fixture.nativeElement.querySelector('.page-header .header-tag')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.page-actions')).not.toBeNull();
   });
 
   it('should not update the full record without administrator access', () => {

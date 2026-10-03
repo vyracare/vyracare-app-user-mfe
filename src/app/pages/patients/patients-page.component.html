@@ -7,10 +7,20 @@
       <vc-heading [level]="1">Pacientes</vc-heading>
       <vc-text [muted]="true">Consulte fichas, registre procedimentos e acompanhe o historico profissional.</vc-text>
     </div>
-    <a class="primary-action" routerLink="/pacientes/cadastro">Cadastrar paciente</a>
+    <div class="header-tag">
+      <span>Cuidado centralizado</span>
+      <strong>Historico protegido</strong>
+    </div>
   </header>
 
   <section class="table-card">
+    <div class="table-toolbar">
+      <div>
+        <vc-heading [level]="2">Pacientes cadastrados</vc-heading>
+        <vc-text [muted]="true">Localize uma ficha para consultar, editar ou registrar uma evolucao.</vc-text>
+      </div>
+      <a class="primary-action" routerLink="/pacientes/cadastro">Cadastrar paciente</a>
+    </div>
     <div class="search-row">
       <label>
         <span>Buscar paciente</span>

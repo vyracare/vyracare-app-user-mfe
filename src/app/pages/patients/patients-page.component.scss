@@ -1,11 +1,18 @@
 :host { display: block; }
-.patients-page { padding: 2.5rem 3rem 3rem; color: var(--color-text); }
-.breadcrumb { display: flex; gap: .55rem; margin-bottom: 1rem; color: var(--color-muted); font-size: .9rem; }
-.breadcrumb a, .actions a, .actions button { color: var(--color-primary); text-decoration: none; }
-.page-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-.eyebrow { color: var(--color-primary); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.patients-page { display: flex; flex-direction: column; gap: 2rem; width: 100%; color: var(--color-text); }
+.breadcrumb { display: flex; align-items: center; gap: .55rem; color: var(--color-muted); font-size: .9rem; }
+.breadcrumb a, .actions a, .actions button { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+.page-header { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 1.5rem 1.75rem; border: 1px solid rgba(90,59,231,.12); border-radius: 20px; background: linear-gradient(135deg,rgba(90,59,231,.12),rgba(255,108,136,.12)); }
+.eyebrow { display: inline-flex; margin-bottom: .75rem; padding: .35rem .75rem; border-radius: 999px; background: rgba(255,255,255,.75); color: var(--color-primary); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.header-tag { display: flex; flex-direction: column; flex-shrink: 0; gap: .25rem; padding: .9rem 1.1rem; border-radius: 16px; background: #fff; box-shadow: 0 14px 30px rgba(44,56,120,.1); }
+.header-tag span { color: var(--color-muted); font-size: .75rem; }
+:host ::ng-deep .page-header .vc-heading { margin: 0 0 .35rem; color: var(--color-text); font-size: 2rem; line-height: 1.2; }
+:host ::ng-deep .page-header .vc-text { margin: 0; color: var(--color-muted); }
 .primary-action { border-radius: 999px; padding: .8rem 1.25rem; background: linear-gradient(135deg,#6e4ef5,#5ac4ff); color: #fff; text-decoration: none; font-weight: 700; }
 .table-card { padding: 1.5rem; border: 1px solid rgba(90,59,231,.12); border-radius: 20px; background: #fff; box-shadow: 0 18px 40px rgba(44,56,120,.1); }
+.table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+:host ::ng-deep .table-toolbar .vc-heading { margin: 0 0 .25rem; }
+:host ::ng-deep .table-toolbar .vc-text { margin: 0; }
 .search-row { display: flex; align-items: end; gap: .75rem; margin-bottom: 1.25rem; }
 label { display: grid; gap: .45rem; flex: 1; font-size: .9rem; font-weight: 600; }
 input, textarea { width: 100%; border: 1px solid rgba(90,59,231,.2); border-radius: 12px; padding: .8rem .9rem; font: inherit; resize: vertical; }
@@ -27,4 +34,4 @@ td small { display: block; margin-top: .2rem; color: var(--color-muted); }
 .history-list article div { display: flex; justify-content: space-between; gap: 1rem; }
 .history-list p { white-space: pre-wrap; }
 .history-list time, .history-list small { color: var(--color-muted); font-size: .8rem; }
-@media (max-width: 720px) { .patients-page { padding: 1.5rem; } .page-header, .search-row, .modal-actions { align-items: stretch; flex-direction: column; } }
+@media (max-width: 720px) { .page-header, .table-toolbar, .search-row, .modal-actions { align-items: stretch; flex-direction: column; } .header-tag { width: 100%; } .primary-action { text-align: center; } }

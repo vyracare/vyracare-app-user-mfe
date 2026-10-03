@@ -8,11 +8,16 @@
         {{ isAdministrator ? 'Edite os dados cadastrais e clinicos.' : 'A ficha e somente leitura; voce pode registrar notas profissionais.' }}
       </vc-text>
     </div>
-    <div class="header-actions">
-      <vc-button type="button" variant="secondary" (click)="historyModalOpen.set(true)">Historico</vc-button>
-      <vc-button type="button" (click)="noteModalOpen.set(true)">Adicionar nota</vc-button>
+    <div class="header-tag">
+      <span>Nivel de acesso</span>
+      <strong>{{ isAdministrator ? 'Edicao administrativa' : 'Consulta profissional' }}</strong>
     </div>
   </header>
+
+  <div class="page-actions">
+    <vc-button type="button" variant="secondary" (click)="historyModalOpen.set(true)">Historico</vc-button>
+    <vc-button type="button" (click)="noteModalOpen.set(true)">Adicionar nota</vc-button>
+  </div>
 
   @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
   @if (success()) { <p class="message success" role="status">{{ success() }}</p> }
