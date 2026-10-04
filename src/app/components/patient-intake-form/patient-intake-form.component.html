@@ -48,25 +48,19 @@
             [error]="form.controls.cpf.touched && form.controls.cpf.invalid ? 'Informe o CPF.' : ''"
           ></vc-input>
 
-          <vc-input
+          <vc-email-input
             id="patient-email"
             label="Email"
-            type="email"
-            mask="email"
-            placeholder="email@exemplo.com"
             formControlName="email"
             [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um email valido.' : ''"
-          ></vc-input>
+          ></vc-email-input>
 
-          <vc-input
+          <vc-phone-input
             id="patient-phone"
             label="Telefone"
-            type="tel"
-            mask="phone"
-            placeholder="(11) 99999-9999"
             formControlName="phone"
             [error]="form.controls.phone.touched && form.controls.phone.invalid ? 'Informe o telefone principal.' : ''"
-          ></vc-input>
+          ></vc-phone-input>
 
         </div>
       </div>
@@ -75,16 +69,14 @@
         <vc-heading [level]="3">Endereco</vc-heading>
         <div class="form-grid">
           <div class="full postal-code-row">
-            <vc-input
+            <vc-postal-code-input
               id="patient-address-zip"
               label="CEP"
-              mask="postalCode"
-              placeholder="00000-000"
               formControlName="addressZip"
               [hint]="postalCodeLoading() ? 'Consultando os Correios...' : (postalCodeFeedback() || 'Consulte o CEP para liberar o endereco.')"
               [error]="postalCodeError() || (form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe um CEP valido.' : '')"
               (blurred)="lookupPostalCode($event)"
-            ></vc-input>
+            ></vc-postal-code-input>
           </div>
           <div class="full">
             <vc-input
@@ -158,19 +150,16 @@
             "
           ></vc-input>
 
-          <vc-input
+          <vc-phone-input
             id="patient-emergency-contact-phone"
             label="Telefone do contato"
-            type="tel"
-            mask="phone"
-            placeholder="(11) 97777-6666"
             formControlName="emergencyContactPhone"
             [error]="
               form.controls.emergencyContactPhone.touched && form.controls.emergencyContactPhone.invalid
                 ? 'Informe o telefone de emergencia.'
                 : ''
             "
-          ></vc-input>
+          ></vc-phone-input>
         </div>
       </div>
 

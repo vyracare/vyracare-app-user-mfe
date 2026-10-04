@@ -4,8 +4,11 @@ import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Va
 import {
   VcButtonComponent,
   VcCheckboxComponent,
+  VcEmailInputComponent,
   VcHeadingComponent,
   VcInputComponent,
+  VcPhoneInputComponent,
+  VcPostalCodeInputComponent,
   VcSelectComponent,
   VcTextComponent
 } from '@vyracare/design-system';
@@ -21,8 +24,11 @@ import { PatientService } from '../../services/patient.service';
     ReactiveFormsModule,
     VcButtonComponent,
     VcCheckboxComponent,
+    VcEmailInputComponent,
     VcHeadingComponent,
     VcInputComponent,
+    VcPhoneInputComponent,
+    VcPostalCodeInputComponent,
     VcSelectComponent,
     VcTextComponent
   ],
