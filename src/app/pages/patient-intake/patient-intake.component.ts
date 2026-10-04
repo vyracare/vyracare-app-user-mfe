@@ -14,6 +14,7 @@ import { PatientIntakePayload } from '../../models/patient-intake.model';
   styleUrl: './patient-intake.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+/** Coordena a persistencia e os feedbacks da ficha inicial do paciente. */
 export class PatientIntakePageComponent {
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -21,7 +22,8 @@ export class PatientIntakePageComponent {
 
   constructor(private readonly patientService: PatientService) {}
 
-  handleSubmit(payload: PatientIntakePayload) {
+  /** Envia a ficha validada para a API e atualiza o feedback da pagina. */
+  handleSubmit(payload: PatientIntakePayload): void {
     this.loading.set(true);
     this.error.set(null);
     this.success.set(false);

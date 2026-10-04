@@ -175,6 +175,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     this.setAddressFieldsEnabled(false);
   }
 
+  /** Reaplica os dados iniciais e as permissoes do formulario quando os inputs externos mudam. */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialValue'] && this.initialValue) {
       this.form.patchValue(this.initialValue);
@@ -187,7 +188,8 @@ export class PatientIntakeFormComponent implements OnChanges {
     }
   }
 
-  onSubmit() {
+  /** Valida a ficha completa e emite o payload, incluindo enderecos informados manualmente. */
+  onSubmit(): void {
     if (!this.addressFieldsEnabled() || this.form.invalid) {
       this.form.markAllAsTouched();
       if (!this.addressFieldsEnabled()) {
@@ -200,6 +202,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     this.formSubmit.emit(this.form.getRawValue());
   }
 
+  /** Consulta um CEP completo e libera o preenchimento manual quando o servico nao responder. */
   lookupPostalCode(postalCode: string): void {
     if (this.readOnly) return;
     const normalized = this.normalizePostalCode(postalCode);
@@ -234,14 +237,17 @@ export class PatientIntakeFormComponent implements OnChanges {
       },
       error: error => {
         this.resolvedPostalCode = '';
-        this.setAddressFieldsEnabled(false);
+        this.setAddressFieldsEnabled(true);
         this.postalCodeLoading.set(false);
-        this.postalCodeError.set(error?.status === 404 ? 'CEP nao encontrado.' : 'Nao foi possivel consultar o CEP agora.');
+        this.postalCodeError.set(error?.status === 404
+          ? 'CEP nao encontrado. Preencha o endereco manualmente.'
+          : 'Nao foi possivel consultar o CEP agora. Preencha o endereco manualmente.');
       }
     });
   }
 
-  resetForm() {
+  /** Restaura a ficha original em edicao ou os valores padrao de um novo cadastro. */
+  resetForm(): void {
     if (this.initialValue) {
       this.form.reset(this.initialValue);
       this.resolvedPostalCode = this.normalizePostalCode(this.initialValue.addressZip);
@@ -287,6 +293,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     this.applyFormAccessState();
   }
 
+  /** Aplica o modo somente leitura sem perder a regra especifica dos campos de endereco. */
   private applyFormAccessState(): void {
     if (this.readOnly) {
       this.form.disable({ emitEvent: false });
@@ -297,6 +304,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     this.setAddressFieldsEnabled(this.addressFieldsEnabled());
   }
 
+  /** Sincroniza o estado habilitado dos campos dependentes da tentativa de consulta do CEP. */
   private setAddressFieldsEnabled(enabled: boolean): void {
     this.addressFieldsEnabled.set(enabled);
     for (const fieldName of this.addressFieldNames) {
@@ -305,6 +313,7 @@ export class PatientIntakeFormComponent implements OnChanges {
     }
   }
 
+  /** Remove valores de endereco associados a um CEP anterior. */
   private clearAddressFields(): void {
     this.form.patchValue({
       addressStreet: '',
@@ -316,10 +325,12 @@ export class PatientIntakeFormComponent implements OnChanges {
     }, { emitEvent: false });
   }
 
+  /** Mantem somente os oito digitos usados pelo contrato de consulta de CEP. */
   private normalizePostalCode(postalCode: string | null | undefined): string {
     return (postalCode ?? '').replace(/\D/g, '');
   }
 
+  /** Verifica se uma ficha existente possui endereco suficiente para iniciar os campos liberados. */
   private hasInitialAddress(value: PatientIntakePayload): boolean {
     return this.normalizePostalCode(value.addressZip).length === 8
       && Boolean(value.addressStreet && value.addressNeighborhood && value.addressCity && value.addressState);

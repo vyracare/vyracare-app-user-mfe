@@ -13,6 +13,7 @@ import { PatientService } from '../../services/patient.service';
   styleUrl: './patients-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+/** Coordena a consulta de pacientes e os modais de notas e historico profissional. */
 export class PatientsPageComponent implements OnInit {
   readonly patients = signal<Patient[]>([]);
   readonly notes = signal<PatientNote[]>([]);
@@ -25,10 +26,12 @@ export class PatientsPageComponent implements OnInit {
 
   constructor(private readonly patientService: PatientService) {}
 
+  /** Carrega a listagem inicial sem filtro textual. */
   ngOnInit(): void {
     this.search('');
   }
 
+  /** Pesquisa pacientes por nome, telefone ou e-mail e atualiza a tabela. */
   search(value: string): void {
     this.loading.set(true);
     this.error.set('');
@@ -44,15 +47,18 @@ export class PatientsPageComponent implements OnInit {
     });
   }
 
+  /** Seleciona o paciente e abre o formulario de nota profissional. */
   openNote(patient: Patient): void {
     this.selectedPatient.set(patient);
     this.noteModalOpen.set(true);
   }
 
+  /** Fecha o formulario de nota profissional. */
   closeNote(): void {
     this.noteModalOpen.set(false);
   }
 
+  /** Valida e persiste uma nota vinculada ao paciente selecionado. */
   saveNote(content: string, procedureName: string): void {
     const patient = this.selectedPatient();
     if (!patient || !content.trim()) {
@@ -75,6 +81,7 @@ export class PatientsPageComponent implements OnInit {
     });
   }
 
+  /** Seleciona o paciente, abre o historico e carrega suas notas. */
   openHistory(patient: Patient): void {
     this.selectedPatient.set(patient);
     this.notes.set([]);
@@ -85,6 +92,7 @@ export class PatientsPageComponent implements OnInit {
     });
   }
 
+  /** Fecha o historico profissional. */
   closeHistory(): void {
     this.historyModalOpen.set(false);
   }

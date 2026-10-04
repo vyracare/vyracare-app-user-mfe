@@ -15,6 +15,7 @@ import { PatientService } from '../../services/patient.service';
   styleUrl: './patient-edit-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+/** Coordena a leitura e a edicao autorizada da ficha de um paciente. */
 export class PatientEditPageComponent implements OnInit {
   readonly patient = signal<Patient | null>(null);
   readonly loading = signal(true);
@@ -34,6 +35,7 @@ export class PatientEditPageComponent implements OnInit {
     this.isAdministrator = accessControl.isAdministrator();
   }
 
+  /** Resolve o paciente da rota e carrega sua ficha e historico profissional. */
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -54,6 +56,7 @@ export class PatientEditPageComponent implements OnInit {
     });
   }
 
+  /** Atualiza a ficha somente quando existe paciente e o usuario e administrador. */
   update(payload: PatientIntakePayload): void {
     const patient = this.patient();
     if (!patient || !this.isAdministrator) return;
@@ -72,11 +75,13 @@ export class PatientEditPageComponent implements OnInit {
     });
   }
 
+  /** Remove os metadados da API para fornecer ao formulario somente os campos editaveis. */
   formValue(patient: Patient): PatientIntakePayload {
     const { id: _id, professionalNotes: _professionalNotes, createdAt: _createdAt, updatedAt: _updatedAt, ...payload } = patient;
     return payload;
   }
 
+  /** Valida e adiciona uma nota profissional ao paciente carregado. */
   saveNote(content: string, procedureName: string): void {
     const patient = this.patient();
     if (!patient || !content.trim()) {

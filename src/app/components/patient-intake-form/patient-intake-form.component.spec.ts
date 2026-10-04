@@ -187,8 +187,22 @@ describe('PatientIntakeFormComponent', () => {
     expect(component.form.controls.addressStreet.disabled).toBe(true);
     patientService.getAddressByPostalCode.mockReturnValue(throwError(() => ({ status: 404 })));
     component.lookupPostalCode('01001-001');
-    expect(component.postalCodeError()).toBe('CEP nao encontrado.');
-    expect(component.form.controls.addressStreet.disabled).toBe(true);
+    expect(component.postalCodeError()).toBe('CEP nao encontrado. Preencha o endereco manualmente.');
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    expect(component.form.controls.addressNumber.enabled).toBe(true);
+    expect(component.form.controls.addressState.enabled).toBe(true);
+  });
+
+  it('should allow manual address input when the postal code service is unavailable', () => {
+    patientService.getAddressByPostalCode.mockReturnValue(throwError(() => ({ status: 503 })));
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+
+    component.lookupPostalCode('01519-000');
+
+    expect(component.postalCodeError()).toContain('Preencha o endereco manualmente.');
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    expect(component.form.controls.addressNeighborhood.enabled).toBe(true);
+    expect(component.form.controls.addressCity.enabled).toBe(true);
   });
 
   it('should apply initial values, restore them and control read-only mode', () => {
