@@ -81,7 +81,7 @@
               mask="postalCode"
               placeholder="00000-000"
               formControlName="addressZip"
-              [hint]="postalCodeLoading() ? 'Consultando os Correios...' : postalCodeFeedback()"
+              [hint]="postalCodeLoading() ? 'Consultando os Correios...' : (postalCodeFeedback() || 'Consulte o CEP para liberar o endereco.')"
               [error]="postalCodeError() || (form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe um CEP valido.' : '')"
               (blurred)="lookupPostalCode($event)"
             ></vc-input>

@@ -40,6 +40,17 @@ export class PatientIntakeFormComponent implements OnChanges {
   readonly postalCodeLoading = signal(false);
   readonly postalCodeFeedback = signal('');
   readonly postalCodeError = signal('');
+  readonly addressFieldsEnabled = signal(false);
+
+  private readonly addressFieldNames = [
+    'addressStreet',
+    'addressNumber',
+    'addressComplement',
+    'addressNeighborhood',
+    'addressCity',
+    'addressState'
+  ] as const;
+  private resolvedPostalCode = '';
 
   readonly genders = ['Feminino', 'Masculino', 'Nao-binario', 'Prefiro nao informar'];
   readonly skinTypes = ['Normal', 'Seca', 'Oleosa', 'Mista', 'Sensivel'];
@@ -155,20 +166,28 @@ export class PatientIntakeFormComponent implements OnChanges {
       }),
       notes: this.fb.control('')
     });
+    this.setAddressFieldsEnabled(false);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialValue'] && this.initialValue) {
       this.form.patchValue(this.initialValue);
+      this.resolvedPostalCode = this.normalizePostalCode(this.initialValue.addressZip);
+      this.addressFieldsEnabled.set(this.hasInitialAddress(this.initialValue));
     }
-    if (changes['readOnly']) {
-      this.readOnly ? this.form.disable({ emitEvent: false }) : this.form.enable({ emitEvent: false });
+
+    if (changes['initialValue'] || changes['readOnly']) {
+      this.applyFormAccessState();
     }
   }
 
   onSubmit() {
-    if (this.form.invalid) {
+    if (!this.addressFieldsEnabled() || this.form.invalid) {
       this.form.markAllAsTouched();
+      if (!this.addressFieldsEnabled()) {
+        this.form.controls.addressZip.markAsTouched();
+        this.postalCodeError.set('Consulte um CEP valido para liberar o endereco.');
+      }
       return;
     }
 
@@ -177,13 +196,21 @@ export class PatientIntakeFormComponent implements OnChanges {
 
   lookupPostalCode(postalCode: string): void {
     if (this.readOnly) return;
-    const normalized = postalCode.replace(/\D/g, '');
+    const normalized = this.normalizePostalCode(postalCode);
     this.postalCodeFeedback.set('');
     this.postalCodeError.set('');
     if (normalized.length !== 8) {
+      this.clearAddressFields();
+      this.resolvedPostalCode = '';
+      this.setAddressFieldsEnabled(false);
       this.form.controls.addressZip.markAsTouched();
       return;
     }
+
+    if (normalized !== this.resolvedPostalCode) {
+      this.clearAddressFields();
+    }
+    this.setAddressFieldsEnabled(false);
     this.postalCodeLoading.set(true);
     this.patientService.getAddressByPostalCode(normalized).subscribe({
       next: address => {
@@ -194,10 +221,14 @@ export class PatientIntakeFormComponent implements OnChanges {
           addressState: address.state,
           addressComplement: this.form.controls.addressComplement.value || address.complement || ''
         });
+        this.resolvedPostalCode = normalized;
+        this.setAddressFieldsEnabled(true);
         this.postalCodeLoading.set(false);
         this.postalCodeFeedback.set('Endereco localizado pelos Correios.');
       },
       error: error => {
+        this.resolvedPostalCode = '';
+        this.setAddressFieldsEnabled(false);
         this.postalCodeLoading.set(false);
         this.postalCodeError.set(error?.status === 404 ? 'CEP nao encontrado.' : 'Nao foi possivel consultar o CEP agora.');
       }
@@ -207,6 +238,9 @@ export class PatientIntakeFormComponent implements OnChanges {
   resetForm() {
     if (this.initialValue) {
       this.form.reset(this.initialValue);
+      this.resolvedPostalCode = this.normalizePostalCode(this.initialValue.addressZip);
+      this.addressFieldsEnabled.set(this.hasInitialAddress(this.initialValue));
+      this.applyFormAccessState();
       return;
     }
     this.form.reset({
@@ -240,5 +274,48 @@ export class PatientIntakeFormComponent implements OnChanges {
       consent: false,
       notes: ''
     });
+    this.resolvedPostalCode = '';
+    this.addressFieldsEnabled.set(false);
+    this.postalCodeFeedback.set('');
+    this.postalCodeError.set('');
+    this.applyFormAccessState();
+  }
+
+  private applyFormAccessState(): void {
+    if (this.readOnly) {
+      this.form.disable({ emitEvent: false });
+      return;
+    }
+
+    this.form.enable({ emitEvent: false });
+    this.setAddressFieldsEnabled(this.addressFieldsEnabled());
+  }
+
+  private setAddressFieldsEnabled(enabled: boolean): void {
+    this.addressFieldsEnabled.set(enabled);
+    for (const fieldName of this.addressFieldNames) {
+      const control = this.form.controls[fieldName];
+      enabled ? control.enable({ emitEvent: false }) : control.disable({ emitEvent: false });
+    }
+  }
+
+  private clearAddressFields(): void {
+    this.form.patchValue({
+      addressStreet: '',
+      addressNumber: '',
+      addressComplement: '',
+      addressNeighborhood: '',
+      addressCity: '',
+      addressState: ''
+    }, { emitEvent: false });
+  }
+
+  private normalizePostalCode(postalCode: string | null | undefined): string {
+    return (postalCode ?? '').replace(/\D/g, '');
+  }
+
+  private hasInitialAddress(value: PatientIntakePayload): boolean {
+    return this.normalizePostalCode(value.addressZip).length === 8
+      && Boolean(value.addressStreet && value.addressNeighborhood && value.addressCity && value.addressState);
   }
 }
