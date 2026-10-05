@@ -17,7 +17,6 @@
   <div class="page-content">
     <vyracare-patient-intake-form
       [loading]="loading()"
-      [error]="error()"
       (formSubmit)="handleSubmit($event)"
     ></vyracare-patient-intake-form>
 
@@ -37,13 +36,5 @@
         </ul>
       </vc-card>
     </aside>
-  </div>
-
-  <div class="success-card" *ngIf="success()">
-    <span class="badge">Concluido</span>
-    <div>
-      <strong>Ficha registrada</strong>
-      <p>O prontuario inicial do paciente foi salvo com sucesso.</p>
-    </div>
   </div>
 </section>
