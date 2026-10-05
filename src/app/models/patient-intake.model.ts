@@ -50,6 +50,7 @@ export interface PatientNote {
   id: string;
   content: string;
   procedureName?: string;
+  kind?: 'professional_note' | 'record_opened';
   authorId: string;
   authorName: string;
   createdAt: string;

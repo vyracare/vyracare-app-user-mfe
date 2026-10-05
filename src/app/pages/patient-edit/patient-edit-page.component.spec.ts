@@ -12,7 +12,7 @@ describe('PatientEditPageComponent', () => {
     professionalNotes: [], createdAt: '2026-10-01T12:00:00Z', updatedAt: '2026-10-03T12:00:00Z'
   } as Patient;
   const service = {
-    getPatient: jest.fn(), updatePatient: jest.fn(), addNote: jest.fn()
+    getPatient: jest.fn(), updatePatient: jest.fn(), addNote: jest.fn(), listNotes: jest.fn()
   };
   const access = { isAdministrator: jest.fn() };
 
@@ -21,6 +21,15 @@ describe('PatientEditPageComponent', () => {
     service.getPatient.mockReturnValue(of(patient));
     service.updatePatient.mockReturnValue(of(patient));
     service.addNote.mockReturnValue(of({ id: 'note-1', content: 'Nota', authorName: 'Ana', createdAt: '2026-10-03T12:00:00Z' }));
+    service.listNotes.mockReturnValue(of([{
+      id: 'record-opened-patient-1',
+      content: 'Prontuário aberto com o cadastro inicial do paciente.',
+      procedureName: 'Abertura do prontuário',
+      kind: 'record_opened',
+      authorId: 'system',
+      authorName: 'Sistema Vyracare',
+      createdAt: patient.createdAt
+    }]));
     access.isAdministrator.mockReturnValue(true);
     await TestBed.configureTestingModule({
       imports: [PatientEditPageComponent],
@@ -39,6 +48,8 @@ describe('PatientEditPageComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.patient()).toEqual(patient);
+    expect(service.listNotes).toHaveBeenCalledWith('patient-1');
+    expect(component.notes()[0].kind).toBe('record_opened');
     const payload = component.formValue(patient);
     expect((payload as PatientIntakePayload).fullName).toBe('Maria Silva');
     expect((payload as any).id).toBeUndefined();
@@ -65,7 +76,7 @@ describe('PatientEditPageComponent', () => {
     expect(component.error()).toContain('Informe');
     component.saveNote('Nota', 'Peeling');
     expect(service.addNote).toHaveBeenCalled();
-    expect(component.notes()).toHaveLength(1);
+    expect(component.notes()).toHaveLength(2);
   });
 
   it('should handle load, update and note errors', () => {
@@ -82,5 +93,12 @@ describe('PatientEditPageComponent', () => {
     service.addNote.mockReturnValue(throwError(() => new Error('fail')));
     component.saveNote('Nota', '');
     expect(component.error()).toContain('adicionar');
+  });
+
+  it('should handle history loading errors', () => {
+    service.listNotes.mockReturnValue(throwError(() => new Error('fail')));
+    const component = TestBed.createComponent(PatientEditPageComponent).componentInstance;
+    component.ngOnInit();
+    expect(component.error()).toContain('historico');
   });
 });

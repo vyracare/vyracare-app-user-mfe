@@ -46,13 +46,21 @@ export class PatientEditPageComponent implements OnInit {
     this.patientService.getPatient(id).subscribe({
       next: patient => {
         this.patient.set(patient);
-        this.notes.set(patient.professionalNotes ?? []);
+        this.loadHistory(patient.id);
         this.loading.set(false);
       },
       error: () => {
         this.error.set('Nao foi possivel carregar a ficha do paciente.');
         this.loading.set(false);
       }
+    });
+  }
+
+  /** Carrega o historico consolidado, incluindo o evento de abertura do prontuario. */
+  private loadHistory(patientId: string): void {
+    this.patientService.listNotes(patientId).subscribe({
+      next: notes => this.notes.set(notes),
+      error: () => this.error.set('Nao foi possivel carregar o historico.')
     });
   }
 

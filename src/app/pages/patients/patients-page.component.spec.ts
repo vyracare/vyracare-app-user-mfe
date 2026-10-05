@@ -59,8 +59,18 @@ describe('PatientsPageComponent', () => {
 
   it('should show note history and handle errors', () => {
     const component = TestBed.createComponent(PatientsPageComponent).componentInstance;
+    service.listNotes.mockReturnValue(of([{
+      id: 'record-opened-patient-1',
+      content: 'Prontuário aberto com o cadastro inicial do paciente.',
+      procedureName: 'Abertura do prontuário',
+      kind: 'record_opened',
+      authorId: 'system',
+      authorName: 'Sistema Vyracare',
+      createdAt: patient.updatedAt
+    }]));
     component.openHistory(patient);
     expect(service.listNotes).toHaveBeenCalledWith('patient-1');
+    expect(component.notes()[0].kind).toBe('record_opened');
     component.closeHistory();
     expect(component.historyModalOpen()).toBe(false);
     service.listNotes.mockReturnValue(throwError(() => new Error('fail')));
