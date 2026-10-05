@@ -43,9 +43,30 @@
                 <td>{{ patient.email }}</td>
                 <td>{{ patient.updatedAt | date:'dd/MM/yyyy' }}</td>
                 <td class="actions">
-                  <a [routerLink]="['/pacientes/editar', patient.id]">Editar</a>
-                  <button type="button" (click)="openNote(patient)">Adicionar nota</button>
-                  <button type="button" (click)="openHistory(patient)">Historico</button>
+                  <vc-tooltip text="Editar paciente">
+                    <vc-icon-button
+                      icon="pencil-square"
+                      ariaLabel="Editar paciente"
+                      variant="soft"
+                      [routerLink]="['/pacientes/editar', patient.id]"
+                    ></vc-icon-button>
+                  </vc-tooltip>
+                  <vc-tooltip text="Adicionar nota profissional">
+                    <vc-icon-button
+                      icon="journal-plus"
+                      ariaLabel="Adicionar nota profissional"
+                      variant="soft"
+                      (action)="openNote(patient)"
+                    ></vc-icon-button>
+                  </vc-tooltip>
+                  <vc-tooltip text="Consultar histórico profissional">
+                    <vc-icon-button
+                      icon="clock-history"
+                      ariaLabel="Consultar histórico profissional"
+                      variant="soft"
+                      (action)="openHistory(patient)"
+                    ></vc-icon-button>
+                  </vc-tooltip>
                 </td>
               </tr>
             }

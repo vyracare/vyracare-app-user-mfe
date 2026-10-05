@@ -34,6 +34,8 @@ describe('PatientsPageComponent', () => {
     expect(fixture.componentInstance.patients()).toEqual([patient]);
     expect(fixture.nativeElement.querySelector('.page-header .header-tag')).toBeNull();
     expect(fixture.nativeElement.querySelector('.table-toolbar .primary-action')).not.toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.actions vc-icon-button')).toHaveLength(3);
+    expect(fixture.nativeElement.querySelectorAll('.actions vc-tooltip')).toHaveLength(3);
   });
 
   it('should add a professional note', () => {

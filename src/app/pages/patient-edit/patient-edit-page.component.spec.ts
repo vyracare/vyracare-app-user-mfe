@@ -47,6 +47,7 @@ describe('PatientEditPageComponent', () => {
     expect(component.success()).toContain('sucesso');
     expect(fixture.nativeElement.querySelector('.page-header .header-tag')).toBeNull();
     expect(fixture.nativeElement.querySelector('.page-actions')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.breadcrumb').textContent).toContain('Prontuário do paciente');
   });
 
   it('should not update the full record without administrator access', () => {

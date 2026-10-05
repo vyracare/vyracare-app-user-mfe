@@ -1,14 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { VcButtonComponent, VcHeadingComponent, VcTextComponent } from '@vyracare/design-system';
+import {
+  VcButtonComponent,
+  VcHeadingComponent,
+  VcIconButtonComponent,
+  VcTextComponent,
+  VcTooltipComponent
+} from '@vyracare/design-system';
 import { Patient, PatientNote } from '../../models/patient-intake.model';
 import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'vyracare-patients-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, VcButtonComponent, VcHeadingComponent, VcTextComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    VcButtonComponent,
+    VcHeadingComponent,
+    VcIconButtonComponent,
+    VcTextComponent,
+    VcTooltipComponent
+  ],
   templateUrl: './patients-page.component.html',
   styleUrl: './patients-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
