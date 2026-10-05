@@ -54,8 +54,19 @@ describe('PatientEditPageComponent', () => {
     expect((payload as PatientIntakePayload).fullName).toBe('Maria Silva');
     expect((payload as any).id).toBeUndefined();
     component.update(payload);
-    expect(service.updatePatient).toHaveBeenCalledWith('patient-1', payload);
+    fixture.detectChanges();
+    expect(service.updatePatient).not.toHaveBeenCalled();
+    expect(component.confirmationModalOpen()).toBe(true);
+    expect(fixture.nativeElement.querySelector('.modal.confirmation')).not.toBeNull();
+    expect(component.pendingUpdate()).not.toHaveProperty('cpf');
+    expect(component.pendingUpdate()).not.toHaveProperty('skinType');
+    expect(component.pendingUpdate()).not.toHaveProperty('consent');
+    expect(component.pendingUpdate()).not.toHaveProperty('notes');
+    const editablePayload = component.pendingUpdate();
+    component.confirmUpdate();
+    expect(service.updatePatient).toHaveBeenCalledWith('patient-1', editablePayload);
     expect(component.success()).toContain('sucesso');
+    expect(component.confirmationModalOpen()).toBe(false);
     expect(fixture.nativeElement.querySelector('.page-header .header-tag')).toBeNull();
     expect(fixture.nativeElement.querySelector('.page-actions')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.breadcrumb').textContent).toContain('Prontuário do paciente');
@@ -67,6 +78,7 @@ describe('PatientEditPageComponent', () => {
     component.ngOnInit();
     component.update({} as PatientIntakePayload);
     expect(service.updatePatient).not.toHaveBeenCalled();
+    expect(component.confirmationModalOpen()).toBe(false);
   });
 
   it('should add notes and validate empty content', () => {
@@ -88,6 +100,7 @@ describe('PatientEditPageComponent', () => {
     component.patient.set(patient);
     service.updatePatient.mockReturnValue(throwError(() => ({ status: 403 })));
     component.update({} as PatientIntakePayload);
+    component.confirmUpdate();
     expect(component.error()).toContain('administradores');
 
     service.addNote.mockReturnValue(throwError(() => new Error('fail')));
@@ -100,5 +113,17 @@ describe('PatientEditPageComponent', () => {
     const component = TestBed.createComponent(PatientEditPageComponent).componentInstance;
     component.ngOnInit();
     expect(component.error()).toContain('historico');
+  });
+
+  it('should cancel a pending update without calling the API', () => {
+    const component = TestBed.createComponent(PatientEditPageComponent).componentInstance;
+    component.ngOnInit();
+    component.update(component.formValue(patient));
+
+    component.cancelUpdate();
+
+    expect(component.confirmationModalOpen()).toBe(false);
+    expect(component.pendingUpdate()).toBeNull();
+    expect(service.updatePatient).not.toHaveBeenCalled();
   });
 });

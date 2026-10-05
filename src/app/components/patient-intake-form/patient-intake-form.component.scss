@@ -108,6 +108,14 @@
       border-color: var(--color-accent);
       box-shadow: 0 0 0 3px rgba(255, 108, 136, 0.18);
     }
+
+    &:disabled {
+      border-color: #d9dbe8;
+      background: #f1f2f6;
+      color: #777b8d;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
   }
 }
 

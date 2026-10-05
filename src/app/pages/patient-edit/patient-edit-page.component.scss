@@ -13,6 +13,7 @@
 .modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem; background: rgba(23,25,48,.52); }
 .modal { display: grid; gap: 1rem; width: min(560px,100%); max-height: 85vh; overflow: auto; padding: 1.5rem; border-radius: 20px; background: #fff; }
 .modal.history { width: min(700px,100%); }
+.modal.confirmation { width: min(520px,100%); }
 .modal label { display: grid; gap: .45rem; font-weight: 600; }
 .modal input, .modal textarea { border: 1px solid rgba(90,59,231,.2); border-radius: 12px; padding: .8rem .9rem; font: inherit; }
 .modal article { display: grid; grid-template-columns: 1fr auto; gap: .3rem 1rem; padding: 1rem; border-radius: 14px; background: #f8f7ff; }

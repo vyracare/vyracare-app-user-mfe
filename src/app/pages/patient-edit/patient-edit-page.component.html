@@ -23,11 +23,29 @@
     <vyracare-patient-intake-form
       [initialValue]="formValue(currentPatient)"
       [readOnly]="!isAdministrator"
+      [isEditMode]="true"
       [loading]="saving()"
       [error]="error() || null"
       submitLabel="Salvar alteracoes"
       (formSubmit)="update($event)"
     ></vyracare-patient-intake-form>
+  }
+
+  @if (confirmationModalOpen()) {
+    <div class="modal-backdrop" (click)="cancelUpdate()">
+      <section class="modal confirmation" role="alertdialog" aria-modal="true" aria-labelledby="confirmation-title" (click)="$event.stopPropagation()">
+        <vc-heading id="confirmation-title" [level]="2">Confirmar alterações</vc-heading>
+        <vc-text>Deseja realmente salvar as alterações realizadas no prontuário?</vc-text>
+        <vc-text [muted]="true">CPF, tipo de pele, consentimento e notas profissionais serão preservados.</vc-text>
+        @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
+        <div class="modal-actions">
+          <vc-button type="button" variant="secondary" [disabled]="saving()" (click)="cancelUpdate()">Cancelar</vc-button>
+          <vc-button type="button" [loading]="saving()" [disabled]="saving()" (click)="confirmUpdate()">
+            {{ saving() ? 'Salvando...' : 'Confirmar e salvar' }}
+          </vc-button>
+        </div>
+      </section>
+    </div>
   }
 
   @if (noteModalOpen()) {

@@ -41,6 +41,7 @@ export class PatientIntakeFormComponent implements OnChanges {
   @Input() error: string | null = null;
   @Input() initialValue: PatientIntakePayload | null = null;
   @Input() readOnly = false;
+  @Input() isEditMode = false;
   @Input() submitLabel = 'Salvar ficha';
   @Output() formSubmit = new EventEmitter<PatientIntakePayload>();
   readonly postalCodeLoading = signal(false);
@@ -183,7 +184,7 @@ export class PatientIntakeFormComponent implements OnChanges {
       this.addressFieldsEnabled.set(this.hasInitialAddress(this.initialValue));
     }
 
-    if (changes['initialValue'] || changes['readOnly']) {
+    if (changes['initialValue'] || changes['readOnly'] || changes['isEditMode']) {
       this.applyFormAccessState();
     }
   }
@@ -302,6 +303,16 @@ export class PatientIntakeFormComponent implements OnChanges {
 
     this.form.enable({ emitEvent: false });
     this.setAddressFieldsEnabled(this.addressFieldsEnabled());
+    this.applyImmutableEditFields();
+  }
+
+  /** Bloqueia os dados que fazem parte do registro original e nao podem ser retificados pela edicao comum. */
+  private applyImmutableEditFields(): void {
+    if (!this.isEditMode) return;
+
+    for (const fieldName of ['cpf', 'skinType', 'consent', 'notes'] as const) {
+      this.form.controls[fieldName].disable({ emitEvent: false });
+    }
   }
 
   /** Sincroniza o estado habilitado dos campos dependentes da tentativa de consulta do CEP. */

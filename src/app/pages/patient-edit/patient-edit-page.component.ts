@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { VcButtonComponent, VcHeadingComponent, VcTextComponent } from '@vyracare/design-system';
 import { PatientIntakeFormComponent } from '../../components/patient-intake-form/patient-intake-form.component';
-import { Patient, PatientIntakePayload, PatientNote } from '../../models/patient-intake.model';
+import { Patient, PatientIntakePayload, PatientNote, PatientUpdatePayload } from '../../models/patient-intake.model';
 import { AccessControlService } from '../../services/access-control.service';
 import { PatientService } from '../../services/patient.service';
 
@@ -24,6 +24,8 @@ export class PatientEditPageComponent implements OnInit {
   readonly success = signal('');
   readonly noteModalOpen = signal(false);
   readonly historyModalOpen = signal(false);
+  readonly confirmationModalOpen = signal(false);
+  readonly pendingUpdate = signal<PatientUpdatePayload | null>(null);
   readonly notes = signal<PatientNote[]>([]);
   readonly isAdministrator: boolean;
 
@@ -64,16 +66,34 @@ export class PatientEditPageComponent implements OnInit {
     });
   }
 
-  /** Atualiza a ficha somente quando existe paciente e o usuario e administrador. */
+  /** Prepara apenas os campos permitidos e solicita confirmacao antes de atualizar. */
   update(payload: PatientIntakePayload): void {
     const patient = this.patient();
     if (!patient || !this.isAdministrator) return;
+
+    const { cpf: _cpf, skinType: _skinType, consent: _consent, notes: _notes, ...editablePayload } = payload;
+    this.pendingUpdate.set(editablePayload);
+    this.confirmationModalOpen.set(true);
+    this.error.set('');
+    this.success.set('');
+  }
+
+  /** Confirma e envia ao backend as alteracoes preparadas pelo administrador. */
+  confirmUpdate(): void {
+    const patient = this.patient();
+    const payload = this.pendingUpdate();
+    if (!patient || !payload || !this.isAdministrator) {
+      this.cancelUpdate();
+      return;
+    }
+
     this.saving.set(true);
     this.error.set('');
     this.patientService.updatePatient(patient.id, payload).subscribe({
       next: updated => {
         this.patient.set(updated);
         this.saving.set(false);
+        this.cancelUpdate();
         this.success.set('Ficha atualizada com sucesso.');
       },
       error: error => {
@@ -81,6 +101,13 @@ export class PatientEditPageComponent implements OnInit {
         this.error.set(error?.status === 403 ? 'Somente administradores podem alterar a ficha.' : 'Nao foi possivel atualizar a ficha.');
       }
     });
+  }
+
+  /** Descarta uma atualizacao ainda nao confirmada, preservando os dados atuais. */
+  cancelUpdate(): void {
+    if (this.saving()) return;
+    this.confirmationModalOpen.set(false);
+    this.pendingUpdate.set(null);
   }
 
   /** Remove os metadados da API para fornecer ao formulario somente os campos editaveis. */

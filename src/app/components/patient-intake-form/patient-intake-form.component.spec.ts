@@ -231,4 +231,29 @@ describe('PatientIntakeFormComponent', () => {
     component.resetForm();
     expect(component.form.getRawValue().fullName).toBe('Maria Silva');
   });
+
+  it('should lock immutable record fields in edit mode', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.initialValue = {
+      ...component.form.getRawValue(),
+      cpf: '123.456.789-00',
+      skinType: 'Mista',
+      consent: true,
+      notes: 'Nota original',
+      addressZip: '01001-001',
+      addressStreet: 'Praca da Se',
+      addressNeighborhood: 'Se',
+      addressCity: 'Sao Paulo',
+      addressState: 'SP'
+    };
+    component.isEditMode = true;
+
+    component.ngOnChanges({ initialValue: {} as any, isEditMode: {} as any });
+
+    expect(component.form.controls.fullName.enabled).toBe(true);
+    expect(component.form.controls.cpf.disabled).toBe(true);
+    expect(component.form.controls.skinType.disabled).toBe(true);
+    expect(component.form.controls.consent.disabled).toBe(true);
+    expect(component.form.controls.notes.disabled).toBe(true);
+  });
 });
