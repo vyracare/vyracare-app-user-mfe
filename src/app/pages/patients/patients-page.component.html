@@ -38,11 +38,11 @@
           } @else {
             @for (patient of patients(); track patient.id) {
               <tr>
-                <td><strong>{{ patient.fullName }}</strong><small>{{ patient.cpf }}</small></td>
-                <td>{{ patient.phone }}</td>
-                <td>{{ patient.email }}</td>
-                <td>{{ patient.updatedAt | date:'dd/MM/yyyy' }}</td>
-                <td class="actions">
+                <td data-label="Paciente"><strong>{{ patient.fullName }}</strong><small>{{ patient.cpf }}</small></td>
+                <td data-label="Telefone">{{ patient.phone }}</td>
+                <td data-label="Email">{{ patient.email }}</td>
+                <td data-label="Atualização">{{ patient.updatedAt | date:'dd/MM/yyyy' }}</td>
+                <td class="actions" data-label="Ações">
                   <vc-tooltip text="Editar paciente">
                     <vc-icon-button
                       icon="pencil-square"

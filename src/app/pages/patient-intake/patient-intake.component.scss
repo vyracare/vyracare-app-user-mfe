@@ -178,8 +178,15 @@
 }
 
 @media (max-width: 720px) {
+  .patient-page { gap: 1rem; }
+  .breadcrumb { overflow-x: auto; white-space: nowrap; font-size: .78rem; }
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem;
+    border-radius: 16px;
   }
+  :host ::ng-deep .page-header vc-heading .vc-heading { font-size: 1.55rem; }
+  .page-content, .page-side { gap: 1rem; }
+  .side-card { padding: 1rem; }
 }
