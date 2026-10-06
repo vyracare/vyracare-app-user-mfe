@@ -10,7 +10,8 @@ import {
   VcPhoneInputComponent,
   VcPostalCodeInputComponent,
   VcSelectComponent,
-  VcTextComponent
+  VcTextComponent,
+  VcToastService
 } from '@vyracare/design-system';
 import type { VcSelectOption } from '@vyracare/design-system';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
@@ -107,7 +108,11 @@ export class PatientIntakeFormComponent implements OnChanges {
     notes: FormControl<string>;
   }>;
 
-  constructor(private readonly fb: NonNullableFormBuilder, private readonly patientService: PatientService) {
+  constructor(
+    private readonly fb: NonNullableFormBuilder,
+    private readonly patientService: PatientService,
+    private readonly toast: VcToastService
+  ) {
     this.form = this.fb.group({
       fullName: this.fb.control('', {
         validators: [Validators.required, Validators.minLength(3)]
@@ -240,9 +245,11 @@ export class PatientIntakeFormComponent implements OnChanges {
         this.resolvedPostalCode = '';
         this.setAddressFieldsEnabled(true);
         this.postalCodeLoading.set(false);
-        this.postalCodeError.set(error?.status === 404
+        const message = error?.status === 404
           ? 'CEP nao encontrado. Preencha o endereco manualmente.'
-          : 'Nao foi possivel consultar o CEP agora. Preencha o endereco manualmente.');
+          : 'Nao foi possivel consultar o CEP agora. Preencha o endereco manualmente.';
+        this.postalCodeError.set(message);
+        this.toast.error('Falha ao consultar CEP', message);
       }
     });
   }

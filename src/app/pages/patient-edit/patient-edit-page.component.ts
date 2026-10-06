@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { VcButtonComponent, VcHeadingComponent, VcTextComponent } from '@vyracare/design-system';
+import { VcButtonComponent, VcHeadingComponent, VcTextComponent, VcToastService } from '@vyracare/design-system';
 import { PatientIntakeFormComponent } from '../../components/patient-intake-form/patient-intake-form.component';
 import { Patient, PatientIntakePayload, PatientNote, PatientUpdatePayload } from '../../models/patient-intake.model';
 import { AccessControlService } from '../../services/access-control.service';
@@ -32,7 +32,8 @@ export class PatientEditPageComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly patientService: PatientService,
-    accessControl: AccessControlService
+    accessControl: AccessControlService,
+    private readonly toast: VcToastService
   ) {
     this.isAdministrator = accessControl.isAdministrator();
   }
@@ -52,7 +53,9 @@ export class PatientEditPageComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Nao foi possivel carregar a ficha do paciente.');
+        const message = 'Nao foi possivel carregar a ficha do paciente.';
+        this.error.set(message);
+        this.toast.error('Falha ao carregar paciente', message);
         this.loading.set(false);
       }
     });
@@ -62,7 +65,11 @@ export class PatientEditPageComponent implements OnInit {
   private loadHistory(patientId: string): void {
     this.patientService.listNotes(patientId).subscribe({
       next: notes => this.notes.set(notes),
-      error: () => this.error.set('Nao foi possivel carregar o historico.')
+      error: () => {
+        const message = 'Nao foi possivel carregar o historico.';
+        this.error.set(message);
+        this.toast.error('Falha ao carregar historico', message);
+      }
     });
   }
 
@@ -95,10 +102,13 @@ export class PatientEditPageComponent implements OnInit {
         this.saving.set(false);
         this.cancelUpdate();
         this.success.set('Ficha atualizada com sucesso.');
+        this.toast.success('Paciente atualizado', 'As alteracoes da ficha foram salvas com sucesso.');
       },
       error: error => {
         this.saving.set(false);
-        this.error.set(error?.status === 403 ? 'Somente administradores podem alterar a ficha.' : 'Nao foi possivel atualizar a ficha.');
+        const message = error?.status === 403 ? 'Somente administradores podem alterar a ficha.' : 'Nao foi possivel atualizar a ficha.';
+        this.error.set(message);
+        this.toast.error('Nao foi possivel atualizar o paciente', message);
       }
     });
   }
@@ -128,8 +138,13 @@ export class PatientEditPageComponent implements OnInit {
         this.notes.update(notes => [note, ...notes]);
         this.noteModalOpen.set(false);
         this.success.set('Nota adicionada ao historico.');
+        this.toast.success('Nota adicionada', 'A nota profissional foi registrada no historico.');
       },
-      error: () => this.error.set('Nao foi possivel adicionar a nota.')
+      error: () => {
+        const message = 'Nao foi possivel adicionar a nota.';
+        this.error.set(message);
+        this.toast.error('Falha ao adicionar nota', message);
+      }
     });
   }
 }

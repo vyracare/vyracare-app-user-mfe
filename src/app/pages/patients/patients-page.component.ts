@@ -6,6 +6,7 @@ import {
   VcHeadingComponent,
   VcIconButtonComponent,
   VcTextComponent,
+  VcToastService,
   VcTooltipComponent
 } from '@vyracare/design-system';
 import { Patient, PatientNote } from '../../models/patient-intake.model';
@@ -38,7 +39,10 @@ export class PatientsPageComponent implements OnInit {
   readonly noteModalOpen = signal(false);
   readonly historyModalOpen = signal(false);
 
-  constructor(private readonly patientService: PatientService) {}
+  constructor(
+    private readonly patientService: PatientService,
+    private readonly toast: VcToastService
+  ) {}
 
   /** Carrega a listagem inicial sem filtro textual. */
   ngOnInit(): void {
@@ -55,7 +59,9 @@ export class PatientsPageComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Nao foi possivel carregar os pacientes.');
+        const message = 'Nao foi possivel carregar os pacientes.';
+        this.error.set(message);
+        this.toast.error('Falha ao carregar pacientes', message);
         this.loading.set(false);
       }
     });
@@ -87,10 +93,13 @@ export class PatientsPageComponent implements OnInit {
       next: () => {
         this.savingNote.set(false);
         this.closeNote();
+        this.toast.success('Nota adicionada', 'A nota profissional foi registrada no historico.');
       },
       error: () => {
         this.savingNote.set(false);
-        this.error.set('Nao foi possivel adicionar a nota.');
+        const message = 'Nao foi possivel adicionar a nota.';
+        this.error.set(message);
+        this.toast.error('Falha ao adicionar nota', message);
       }
     });
   }
@@ -102,7 +111,11 @@ export class PatientsPageComponent implements OnInit {
     this.historyModalOpen.set(true);
     this.patientService.listNotes(patient.id).subscribe({
       next: notes => this.notes.set(notes),
-      error: () => this.error.set('Nao foi possivel carregar o historico.')
+      error: () => {
+        const message = 'Nao foi possivel carregar o historico.';
+        this.error.set(message);
+        this.toast.error('Falha ao carregar historico', message);
+      }
     });
   }
 
