@@ -85,7 +85,7 @@
         <vc-text [muted]="true">{{ selectedPatient()?.fullName }}</vc-text>
         <label>Procedimento <input #procedureInput type="text" placeholder="Procedimento realizado" /></label>
         <label>Nota profissional <textarea #noteInput rows="5" placeholder="Descreva o procedimento e as observacoes"></textarea></label>
-        <div class="modal-actions">
+        <div class="modal-actions modal-actions--split">
           <vc-button type="button" variant="secondary" (click)="closeNote()">Cancelar</vc-button>
           <vc-button type="button" [loading]="savingNote()" (click)="saveNote(noteInput.value, procedureInput.value)">Salvar nota</vc-button>
         </div>
