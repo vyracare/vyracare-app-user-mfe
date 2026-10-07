@@ -22,7 +22,9 @@
         <span>Buscar paciente</span>
         <input #searchInput type="search" placeholder="Nome, telefone ou email" (keyup.enter)="search(searchInput.value)" />
       </label>
-      <vc-button type="button" (click)="search(searchInput.value)">Buscar</vc-button>
+      <vc-tooltip text="Buscar paciente" position="top">
+        <vc-icon-button icon="search" ariaLabel="Buscar paciente" variant="solid" size="lg" (action)="search(searchInput.value)"></vc-icon-button>
+      </vc-tooltip>
     </div>
 
     @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
