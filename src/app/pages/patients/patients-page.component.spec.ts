@@ -41,7 +41,8 @@ describe('PatientsPageComponent', () => {
   it('should add a professional note', () => {
     const component = TestBed.createComponent(PatientsPageComponent).componentInstance;
     component.openNote(patient);
-    component.saveNote('Boa evolucao', 'Peeling');
+    component.noteForm.setValue({ content: 'Boa evolucao', procedureName: 'Peeling' });
+    component.saveNote();
     expect(service.addNote).toHaveBeenCalledWith('patient-1', { content: 'Boa evolucao', procedureName: 'Peeling' });
     expect(component.noteModalOpen()).toBe(false);
     component.closeNote();
@@ -49,11 +50,12 @@ describe('PatientsPageComponent', () => {
 
   it('should validate and handle note errors', () => {
     const component = TestBed.createComponent(PatientsPageComponent).componentInstance;
-    component.saveNote('', '');
+    component.saveNote();
     expect(component.error()).toContain('Informe');
     component.openNote(patient);
     service.addNote.mockReturnValue(throwError(() => new Error('fail')));
-    component.saveNote('Nota', '');
+    component.noteForm.controls.content.setValue('Nota');
+    component.saveNote();
     expect(component.error()).toContain('adicionar');
   });
 

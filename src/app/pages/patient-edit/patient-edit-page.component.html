@@ -12,7 +12,7 @@
 
   <div class="page-actions">
     <vc-button type="button" variant="secondary" (click)="historyModalOpen.set(true)">Historico</vc-button>
-    <vc-button type="button" (click)="noteModalOpen.set(true)">Adicionar nota</vc-button>
+    <vc-button type="button" (click)="openNote()">Adicionar nota</vc-button>
   </div>
 
   @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
@@ -50,15 +50,15 @@
 
   @if (noteModalOpen()) {
     <div class="modal-backdrop" (click)="noteModalOpen.set(false)">
-      <section class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <form class="modal" [formGroup]="noteForm" (ngSubmit)="saveNote()" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
         <vc-heading [level]="2">Adicionar nota profissional</vc-heading>
-        <label>Procedimento <input #procedureInput type="text" /></label>
-        <label>Nota <textarea #noteInput rows="5"></textarea></label>
+        <vc-input id="patient-edit-note-procedure" label="Procedimento" formControlName="procedureName"></vc-input>
+        <vc-textarea id="patient-edit-note-content" label="Nota" [rows]="5" formControlName="content" [required]="true" [error]="noteForm.controls.content.touched && noteForm.controls.content.invalid ? 'Informe a nota profissional.' : ''"></vc-textarea>
         <div class="modal-actions modal-actions--split">
           <vc-button type="button" variant="secondary" (click)="noteModalOpen.set(false)">Cancelar</vc-button>
-          <vc-button type="button" (click)="saveNote(noteInput.value, procedureInput.value)">Salvar nota</vc-button>
+          <vc-button type="submit">Salvar nota</vc-button>
         </div>
-      </section>
+      </form>
     </div>
   }
 

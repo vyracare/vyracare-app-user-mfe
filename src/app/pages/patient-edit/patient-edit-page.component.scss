@@ -15,8 +15,6 @@
 .modal > * { box-sizing: border-box; min-width: 0; }
 .modal.history { width: min(700px,100%); }
 .modal.confirmation { width: min(520px,100%); }
-.modal label { display: grid; gap: .45rem; font-weight: 600; }
-.modal input, .modal textarea { box-sizing: border-box; width: 100%; max-width: 100%; border: 1px solid rgba(90,59,231,.2); border-radius: 12px; padding: .8rem .9rem; font: inherit; resize: vertical; }
 .modal article { display: grid; grid-template-columns: 1fr auto; gap: .3rem 1rem; padding: 1rem; border-radius: 14px; background: #f8f7ff; }
 .modal article p, .modal article small { grid-column: 1 / -1; }
 .modal time, .modal small { color: var(--color-muted); font-size: .8rem; }

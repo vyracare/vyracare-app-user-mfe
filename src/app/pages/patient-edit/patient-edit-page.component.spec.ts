@@ -84,9 +84,10 @@ describe('PatientEditPageComponent', () => {
   it('should add notes and validate empty content', () => {
     const component = TestBed.createComponent(PatientEditPageComponent).componentInstance;
     component.ngOnInit();
-    component.saveNote('', '');
+    component.saveNote();
     expect(component.error()).toContain('Informe');
-    component.saveNote('Nota', 'Peeling');
+    component.noteForm.setValue({ content: 'Nota', procedureName: 'Peeling' });
+    component.saveNote();
     expect(service.addNote).toHaveBeenCalled();
     expect(component.notes()).toHaveLength(2);
   });
@@ -104,7 +105,8 @@ describe('PatientEditPageComponent', () => {
     expect(component.error()).toContain('administradores');
 
     service.addNote.mockReturnValue(throwError(() => new Error('fail')));
-    component.saveNote('Nota', '');
+    component.noteForm.setValue({ content: 'Nota', procedureName: '' });
+    component.saveNote();
     expect(component.error()).toContain('adicionar');
   });
 

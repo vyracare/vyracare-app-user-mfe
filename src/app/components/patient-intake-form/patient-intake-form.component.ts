@@ -11,6 +11,7 @@ import {
   VcPostalCodeInputComponent,
   VcSelectComponent,
   VcTextComponent,
+  VcTextareaComponent,
   VcToastService
 } from '@vyracare/design-system';
 import type { VcSelectOption } from '@vyracare/design-system';
@@ -31,7 +32,8 @@ import { PatientService } from '../../services/patient.service';
     VcPhoneInputComponent,
     VcPostalCodeInputComponent,
     VcSelectComponent,
-    VcTextComponent
+    VcTextComponent,
+    VcTextareaComponent
   ],
   templateUrl: './patient-intake-form.component.html',
   styleUrl: './patient-intake-form.component.scss',

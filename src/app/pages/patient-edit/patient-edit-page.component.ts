@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { VcButtonComponent, VcHeadingComponent, VcTextComponent, VcToastService } from '@vyracare/design-system';
+import { VcButtonComponent, VcHeadingComponent, VcInputComponent, VcTextComponent, VcTextareaComponent, VcToastService } from '@vyracare/design-system';
 import { PatientIntakeFormComponent } from '../../components/patient-intake-form/patient-intake-form.component';
 import { Patient, PatientIntakePayload, PatientNote, PatientUpdatePayload } from '../../models/patient-intake.model';
 import { AccessControlService } from '../../services/access-control.service';
@@ -10,7 +11,7 @@ import { PatientService } from '../../services/patient.service';
 @Component({
   selector: 'vyracare-patient-edit-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, PatientIntakeFormComponent, VcButtonComponent, VcHeadingComponent, VcTextComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PatientIntakeFormComponent, VcButtonComponent, VcHeadingComponent, VcInputComponent, VcTextComponent, VcTextareaComponent],
   templateUrl: './patient-edit-page.component.html',
   styleUrl: './patient-edit-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +28,10 @@ export class PatientEditPageComponent implements OnInit {
   readonly confirmationModalOpen = signal(false);
   readonly pendingUpdate = signal<PatientUpdatePayload | null>(null);
   readonly notes = signal<PatientNote[]>([]);
+  readonly noteForm = new FormGroup({
+    procedureName: new FormControl('', { nonNullable: true }),
+    content: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+  });
   readonly isAdministrator: boolean;
 
   constructor(
@@ -126,13 +131,21 @@ export class PatientEditPageComponent implements OnInit {
     return payload;
   }
 
+  /** Abre uma nova nota sem reaproveitar valores de uma edicao anterior. */
+  openNote(): void {
+    this.noteForm.reset();
+    this.noteModalOpen.set(true);
+  }
+
   /** Valida e adiciona uma nota profissional ao paciente carregado. */
-  saveNote(content: string, procedureName: string): void {
+  saveNote(): void {
     const patient = this.patient();
-    if (!patient || !content.trim()) {
+    if (!patient || this.noteForm.invalid) {
+      this.noteForm.markAllAsTouched();
       this.error.set('Informe a nota profissional.');
       return;
     }
+    const { content, procedureName } = this.noteForm.getRawValue();
     this.patientService.addNote(patient.id, { content: content.trim(), procedureName: procedureName.trim() || undefined }).subscribe({
       next: note => {
         this.notes.update(notes => [note, ...notes]);

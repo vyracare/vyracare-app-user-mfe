@@ -166,37 +166,15 @@
       <div class="form-section">
         <vc-heading [level]="3">Anamnese e objetivos</vc-heading>
         <div class="form-grid">
-          <label class="form-field full">
-            <span>Queixa principal</span>
-            <textarea
-              rows="3"
-              placeholder="Descreva a principal queixa estetica."
-              formControlName="mainComplaint"
-              [class.invalid]="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid"
-            ></textarea>
-            <small class="error" *ngIf="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid">
-              Informe a queixa principal.
-            </small>
-          </label>
+          <vc-textarea class="full" id="patient-main-complaint" label="Queixa principal" [rows]="3" placeholder="Descreva a principal queixa estetica." formControlName="mainComplaint" [required]="true" [error]="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid ? 'Informe a queixa principal.' : ''"></vc-textarea>
 
-          <label class="form-field full">
-            <span>Objetivos do tratamento</span>
-            <textarea
-              rows="3"
-              placeholder="Resultados que o paciente espera."
-              formControlName="objectives"
-              [class.invalid]="form.controls.objectives.touched && form.controls.objectives.invalid"
-            ></textarea>
-            <small class="error" *ngIf="form.controls.objectives.touched && form.controls.objectives.invalid">
-              Informe os objetivos.
-            </small>
-          </label>
+          <vc-textarea class="full" id="patient-objectives" label="Objetivos do tratamento" [rows]="3" placeholder="Resultados que o paciente espera." formControlName="objectives" [required]="true" [error]="form.controls.objectives.touched && form.controls.objectives.invalid ? 'Informe os objetivos.' : ''"></vc-textarea>
 
-          <label class="form-field full"><span>Condicoes medicas</span><textarea rows="3" placeholder="Ex: hipertensao" formControlName="medicalConditions"></textarea></label>
-          <label class="form-field full"><span>Alergias</span><textarea rows="3" placeholder="Ex: cosmeticos, medicamentos" formControlName="allergies"></textarea></label>
-          <label class="form-field full"><span>Medicacoes em uso</span><textarea rows="3" placeholder="Ex: suplementos, remedios continuos" formControlName="medications"></textarea></label>
-          <label class="form-field full"><span>Cirurgias anteriores</span><textarea rows="3" placeholder="Ex: cirurgia plastica" formControlName="previousSurgeries"></textarea></label>
-          <label class="form-field full"><span>Procedimentos esteticos anteriores</span><textarea rows="3" placeholder="Ex: botox, peeling" formControlName="aestheticProcedures"></textarea></label>
+          <vc-textarea class="full" id="patient-medical-conditions" label="Condicoes medicas" [rows]="3" placeholder="Ex: hipertensao" formControlName="medicalConditions"></vc-textarea>
+          <vc-textarea class="full" id="patient-allergies" label="Alergias" [rows]="3" placeholder="Ex: cosmeticos, medicamentos" formControlName="allergies"></vc-textarea>
+          <vc-textarea class="full" id="patient-medications" label="Medicacoes em uso" [rows]="3" placeholder="Ex: suplementos, remedios continuos" formControlName="medications"></vc-textarea>
+          <vc-textarea class="full" id="patient-previous-surgeries" label="Cirurgias anteriores" [rows]="3" placeholder="Ex: cirurgia plastica" formControlName="previousSurgeries"></vc-textarea>
+          <vc-textarea class="full" id="patient-aesthetic-procedures" label="Procedimentos esteticos anteriores" [rows]="3" placeholder="Ex: botox, peeling" formControlName="aestheticProcedures"></vc-textarea>
 
           <vc-select
             id="patient-skin-type"
@@ -228,10 +206,7 @@
       <div class="form-section">
         <vc-heading [level]="3">Observacoes adicionais</vc-heading>
         <div class="form-grid">
-          <label class="form-field full">
-            <span>Notas do profissional</span>
-            <textarea rows="3" placeholder="Preferencias, observacoes e cuidados" formControlName="notes"></textarea>
-          </label>
+          <vc-textarea class="full" id="patient-notes" label="Notas do profissional" [rows]="3" placeholder="Preferencias, observacoes e cuidados" formControlName="notes"></vc-textarea>
         </div>
       </div>
 

@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
   VcButtonComponent,
   VcHeadingComponent,
   VcIconButtonComponent,
+  VcInputComponent,
+  VcSearchComponent,
   VcTextComponent,
+  VcTextareaComponent,
   VcToastService,
   VcTooltipComponent
 } from '@vyracare/design-system';
@@ -17,11 +21,15 @@ import { PatientService } from '../../services/patient.service';
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     RouterLink,
     VcButtonComponent,
     VcHeadingComponent,
     VcIconButtonComponent,
+    VcInputComponent,
+    VcSearchComponent,
     VcTextComponent,
+    VcTextareaComponent,
     VcTooltipComponent
   ],
   templateUrl: './patients-page.component.html',
@@ -38,6 +46,10 @@ export class PatientsPageComponent implements OnInit {
   readonly error = signal('');
   readonly noteModalOpen = signal(false);
   readonly historyModalOpen = signal(false);
+  readonly noteForm = new FormGroup({
+    procedureName: new FormControl('', { nonNullable: true }),
+    content: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+  });
 
   constructor(
     private readonly patientService: PatientService,
@@ -70,6 +82,7 @@ export class PatientsPageComponent implements OnInit {
   /** Seleciona o paciente e abre o formulario de nota profissional. */
   openNote(patient: Patient): void {
     this.selectedPatient.set(patient);
+    this.noteForm.reset();
     this.noteModalOpen.set(true);
   }
 
@@ -79,12 +92,14 @@ export class PatientsPageComponent implements OnInit {
   }
 
   /** Valida e persiste uma nota vinculada ao paciente selecionado. */
-  saveNote(content: string, procedureName: string): void {
+  saveNote(): void {
     const patient = this.selectedPatient();
-    if (!patient || !content.trim()) {
+    if (!patient || this.noteForm.invalid) {
+      this.noteForm.markAllAsTouched();
       this.error.set('Informe a nota profissional.');
       return;
     }
+    const { content, procedureName } = this.noteForm.getRawValue();
     this.savingNote.set(true);
     this.patientService.addNote(patient.id, {
       content: content.trim(),

@@ -17,15 +17,7 @@
       </div>
       <a class="primary-action" routerLink="/pacientes/cadastro">Cadastrar paciente</a>
     </div>
-    <div class="search-row">
-      <label>
-        <span>Buscar paciente</span>
-        <input #searchInput type="search" placeholder="Nome, telefone ou email" (keyup.enter)="search(searchInput.value)" />
-      </label>
-      <vc-tooltip text="Buscar paciente" position="top">
-        <vc-icon-button icon="search" ariaLabel="Buscar paciente" variant="solid" size="lg" (action)="search(searchInput.value)"></vc-icon-button>
-      </vc-tooltip>
-    </div>
+    <vc-search class="search-row" id="patient-search" label="Buscar paciente" placeholder="Nome, telefone ou email" [action]="true" actionLabel="Buscar paciente" (search)="search($event)"></vc-search>
 
     @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
 
@@ -80,16 +72,16 @@
 
   @if (noteModalOpen()) {
     <div class="modal-backdrop" (click)="closeNote()">
-      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="note-title" (click)="$event.stopPropagation()">
+      <form class="modal" [formGroup]="noteForm" (ngSubmit)="saveNote()" role="dialog" aria-modal="true" aria-labelledby="note-title" (click)="$event.stopPropagation()">
         <vc-heading id="note-title" [level]="2">Adicionar nota</vc-heading>
         <vc-text [muted]="true">{{ selectedPatient()?.fullName }}</vc-text>
-        <label>Procedimento <input #procedureInput type="text" placeholder="Procedimento realizado" /></label>
-        <label>Nota profissional <textarea #noteInput rows="5" placeholder="Descreva o procedimento e as observacoes"></textarea></label>
+        <vc-input id="patient-note-procedure" label="Procedimento" placeholder="Procedimento realizado" formControlName="procedureName"></vc-input>
+        <vc-textarea id="patient-note-content" label="Nota profissional" [rows]="5" placeholder="Descreva o procedimento e as observacoes" formControlName="content" [required]="true" [error]="noteForm.controls.content.touched && noteForm.controls.content.invalid ? 'Informe a nota profissional.' : ''"></vc-textarea>
         <div class="modal-actions modal-actions--split">
           <vc-button type="button" variant="secondary" (click)="closeNote()">Cancelar</vc-button>
-          <vc-button type="button" [loading]="savingNote()" (click)="saveNote(noteInput.value, procedureInput.value)">Salvar nota</vc-button>
+          <vc-button type="submit" [loading]="savingNote()">Salvar nota</vc-button>
         </div>
-      </section>
+      </form>
     </div>
   }
 
