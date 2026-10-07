@@ -70,7 +70,7 @@
         @for (note of notes(); track note.id) {
           <article><strong>{{ note.procedureName || 'Atendimento' }}</strong><time>{{ note.createdAt | date:'dd/MM/yyyy HH:mm' }}</time><p>{{ note.content }}</p><small>{{ note.authorName }}</small></article>
         }
-        <div class="modal-actions"><vc-button type="button" (click)="historyModalOpen.set(false)">Fechar</vc-button></div>
+        <div class="modal-actions"><vc-button type="button" variant="secondary" (click)="historyModalOpen.set(false)">Fechar</vc-button></div>
       </section>
     </div>
   }
