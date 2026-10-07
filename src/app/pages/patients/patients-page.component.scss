@@ -12,7 +12,6 @@
 :host ::ng-deep .table-toolbar .vc-heading { margin: 0 0 .25rem; }
 :host ::ng-deep .table-toolbar .vc-text { margin: 0; }
 .search-row { display: flex; align-items: end; gap: .75rem; margin-bottom: 1.25rem; }
-:host ::ng-deep .search-row .vc-icon-button--solid { color: #fff; }
 label { display: grid; gap: .45rem; flex: 1; font-size: .9rem; font-weight: 600; }
 input, textarea { box-sizing: border-box; width: 100%; max-width: 100%; border: 1px solid rgba(90,59,231,.2); border-radius: 12px; padding: .8rem .9rem; font: inherit; resize: vertical; }
 .table-wrapper { overflow-x: auto; }
