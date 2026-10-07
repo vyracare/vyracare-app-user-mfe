@@ -26,6 +26,7 @@
   :host ::ng-deep .page-header .vc-heading { font-size: 1.55rem; }
   .page-header, .modal-actions { align-items: stretch; flex-direction: column; }
   .page-actions, .modal-actions--split { align-items: center; flex-direction: row; justify-content: space-between; }
+  .page-actions { padding-inline: 1rem; }
   :host ::ng-deep .page-actions vc-button,
   :host ::ng-deep .modal-actions--split vc-button { min-width: 0; }
   :host ::ng-deep .page-actions vc-button .vc-button__inner,
