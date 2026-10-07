@@ -24,9 +24,11 @@
   .breadcrumb { overflow-x: auto; white-space: nowrap; font-size: .78rem; }
   .page-header { padding: 1rem; border-radius: 16px; }
   :host ::ng-deep .page-header .vc-heading { font-size: 1.55rem; }
-  .page-header, .page-actions, .modal-actions { align-items: stretch; flex-direction: column; }
-  .modal-actions--split { align-items: center; flex-direction: row; justify-content: space-between; }
+  .page-header, .modal-actions { align-items: stretch; flex-direction: column; }
+  .page-actions, .modal-actions--split { align-items: center; flex-direction: row; justify-content: space-between; }
+  :host ::ng-deep .page-actions vc-button,
   :host ::ng-deep .modal-actions--split vc-button { min-width: 0; }
+  :host ::ng-deep .page-actions vc-button .vc-button__inner,
   :host ::ng-deep .modal-actions--split vc-button .vc-button__inner {
     max-width: 100%;
     min-height: 2.75rem;
