@@ -42,47 +42,42 @@
           <vc-input
             id="patient-cpf"
             label="CPF"
+            mask="cpf"
             placeholder="000.000.000-00"
             formControlName="cpf"
             [error]="form.controls.cpf.touched && form.controls.cpf.invalid ? 'Informe o CPF.' : ''"
           ></vc-input>
 
-          <vc-input id="patient-rg" label="RG" placeholder="Opcional" formControlName="rg"></vc-input>
-
-          <vc-input
+          <vc-email-input
             id="patient-email"
             label="Email"
-            type="email"
-            mask="email"
-            placeholder="email@exemplo.com"
             formControlName="email"
             [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um email valido.' : ''"
-          ></vc-input>
+          ></vc-email-input>
 
-          <vc-input
+          <vc-phone-input
             id="patient-phone"
             label="Telefone"
-            type="tel"
-            mask="phone"
-            placeholder="(11) 99999-9999"
             formControlName="phone"
             [error]="form.controls.phone.touched && form.controls.phone.invalid ? 'Informe o telefone principal.' : ''"
-          ></vc-input>
+          ></vc-phone-input>
 
-          <vc-input
-            id="patient-whatsapp"
-            label="WhatsApp"
-            type="tel"
-            mask="phone"
-            placeholder="Opcional"
-            formControlName="whatsapp"
-          ></vc-input>
         </div>
       </div>
 
       <div class="form-section">
         <vc-heading [level]="3">Endereco</vc-heading>
         <div class="form-grid">
+          <div class="full postal-code-row">
+            <vc-postal-code-input
+              id="patient-address-zip"
+              label="CEP"
+              formControlName="addressZip"
+              [hint]="postalCodeLoading() ? 'Consultando os Correios...' : (postalCodeFeedback() || 'Consulte o CEP para liberar o endereco.')"
+              [error]="postalCodeError() || (form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe um CEP valido.' : '')"
+              (blurred)="lookupPostalCode($event)"
+            ></vc-postal-code-input>
+          </div>
           <div class="full">
             <vc-input
               id="patient-address-street"
@@ -137,13 +132,6 @@
             [error]="form.controls.addressState.touched && form.controls.addressState.invalid ? 'Informe o estado.' : ''"
           ></vc-select>
 
-          <vc-input
-            id="patient-address-zip"
-            label="CEP"
-            placeholder="00000-000"
-            formControlName="addressZip"
-            [error]="form.controls.addressZip.touched && form.controls.addressZip.invalid ? 'Informe o CEP.' : ''"
-          ></vc-input>
         </div>
       </div>
 
@@ -162,85 +150,31 @@
             "
           ></vc-input>
 
-          <vc-input
+          <vc-phone-input
             id="patient-emergency-contact-phone"
             label="Telefone do contato"
-            type="tel"
-            mask="phone"
-            placeholder="(11) 97777-6666"
             formControlName="emergencyContactPhone"
             [error]="
               form.controls.emergencyContactPhone.touched && form.controls.emergencyContactPhone.invalid
                 ? 'Informe o telefone de emergencia.'
                 : ''
             "
-          ></vc-input>
+          ></vc-phone-input>
         </div>
       </div>
 
       <div class="form-section">
         <vc-heading [level]="3">Anamnese e objetivos</vc-heading>
         <div class="form-grid">
-          <label class="form-field full">
-            <span>Queixa principal</span>
-            <textarea
-              rows="3"
-              placeholder="Descreva a principal queixa estetica."
-              formControlName="mainComplaint"
-              [class.invalid]="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid"
-            ></textarea>
-            <small class="error" *ngIf="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid">
-              Informe a queixa principal.
-            </small>
-          </label>
+          <vc-textarea class="full" id="patient-main-complaint" label="Queixa principal" [rows]="3" placeholder="Descreva a principal queixa estetica." formControlName="mainComplaint" [required]="true" [error]="form.controls.mainComplaint.touched && form.controls.mainComplaint.invalid ? 'Informe a queixa principal.' : ''"></vc-textarea>
 
-          <label class="form-field full">
-            <span>Objetivos do tratamento</span>
-            <textarea
-              rows="3"
-              placeholder="Resultados que o paciente espera."
-              formControlName="objectives"
-              [class.invalid]="form.controls.objectives.touched && form.controls.objectives.invalid"
-            ></textarea>
-            <small class="error" *ngIf="form.controls.objectives.touched && form.controls.objectives.invalid">
-              Informe os objetivos.
-            </small>
-          </label>
+          <vc-textarea class="full" id="patient-objectives" label="Objetivos do tratamento" [rows]="3" placeholder="Resultados que o paciente espera." formControlName="objectives" [required]="true" [error]="form.controls.objectives.touched && form.controls.objectives.invalid ? 'Informe os objetivos.' : ''"></vc-textarea>
 
-          <vc-input
-            id="patient-medical-conditions"
-            label="Condicoes medicas"
-            placeholder="Ex: hipertensao"
-            formControlName="medicalConditions"
-          ></vc-input>
-
-          <vc-input
-            id="patient-allergies"
-            label="Alergias"
-            placeholder="Ex: cosmeticos, medicamentos"
-            formControlName="allergies"
-          ></vc-input>
-
-          <vc-input
-            id="patient-medications"
-            label="Medicacoes em uso"
-            placeholder="Ex: suplementos, remedios continuos"
-            formControlName="medications"
-          ></vc-input>
-
-          <vc-input
-            id="patient-previous-surgeries"
-            label="Cirurgias anteriores"
-            placeholder="Ex: cirurgia plastica"
-            formControlName="previousSurgeries"
-          ></vc-input>
-
-          <vc-input
-            id="patient-aesthetic-procedures"
-            label="Procedimentos esteticos anteriores"
-            placeholder="Ex: botox, peeling"
-            formControlName="aestheticProcedures"
-          ></vc-input>
+          <vc-textarea class="full" id="patient-medical-conditions" label="Condicoes medicas" [rows]="3" placeholder="Ex: hipertensao" formControlName="medicalConditions"></vc-textarea>
+          <vc-textarea class="full" id="patient-allergies" label="Alergias" [rows]="3" placeholder="Ex: cosmeticos, medicamentos" formControlName="allergies"></vc-textarea>
+          <vc-textarea class="full" id="patient-medications" label="Medicacoes em uso" [rows]="3" placeholder="Ex: suplementos, remedios continuos" formControlName="medications"></vc-textarea>
+          <vc-textarea class="full" id="patient-previous-surgeries" label="Cirurgias anteriores" [rows]="3" placeholder="Ex: cirurgia plastica" formControlName="previousSurgeries"></vc-textarea>
+          <vc-textarea class="full" id="patient-aesthetic-procedures" label="Procedimentos esteticos anteriores" [rows]="3" placeholder="Ex: botox, peeling" formControlName="aestheticProcedures"></vc-textarea>
 
           <vc-select
             id="patient-skin-type"
@@ -263,55 +197,34 @@
       <div class="form-section">
         <vc-heading [level]="3">Habitos e condicoes</vc-heading>
         <div class="toggle-grid">
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="smoking" />
-            <div>
-              <strong>Tabagismo</strong>
-              <p>Paciente fuma regularmente?</p>
-            </div>
-          </label>
-
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="alcohol" />
-            <div>
-              <strong>Consumo de alcool</strong>
-              <p>Paciente consome alcool com frequencia?</p>
-            </div>
-          </label>
-
-          <label class="toggle-card">
-            <input type="checkbox" formControlName="pregnantOrBreastfeeding" />
-            <div>
-              <strong>Gestacao ou lactacao</strong>
-              <p>Paciente esta gestante ou amamentando?</p>
-            </div>
-          </label>
+          <vc-checkbox label="Tabagismo" description="Paciente fuma regularmente?" formControlName="smoking"></vc-checkbox>
+          <vc-checkbox label="Consumo de alcool" description="Paciente consome alcool com frequencia?" formControlName="alcohol"></vc-checkbox>
+          <vc-checkbox label="Gestacao ou lactacao" description="Paciente esta gestante ou amamentando?" formControlName="pregnantOrBreastfeeding"></vc-checkbox>
         </div>
       </div>
 
       <div class="form-section">
         <vc-heading [level]="3">Observacoes adicionais</vc-heading>
         <div class="form-grid">
-          <label class="form-field full">
-            <span>Notas do profissional</span>
-            <textarea rows="3" placeholder="Preferencias, observacoes e cuidados" formControlName="notes"></textarea>
-          </label>
+          <vc-textarea class="full" id="patient-notes" label="Notas do profissional" [rows]="3" placeholder="Preferencias, observacoes e cuidados" formControlName="notes"></vc-textarea>
         </div>
       </div>
 
-      <label class="consent-row">
-        <input type="checkbox" formControlName="consent" />
-        <span>Confirmo que as informacoes acima sao verdadeiras e autorizo o uso para fins clinicos.</span>
-      </label>
-      <small class="error" *ngIf="form.controls.consent.touched && form.controls.consent.invalid">
-        Confirme o consentimento do paciente.
-      </small>
+      <vc-checkbox
+        id="patient-consent"
+        label="Consentimento do paciente"
+        description="Confirmo que as informacoes acima sao verdadeiras e autorizo o uso para fins clinicos."
+        formControlName="consent"
+        [error]="form.controls.consent.touched && form.controls.consent.invalid ? 'Confirme o consentimento do paciente.' : ''"
+      ></vc-checkbox>
 
       <div class="form-actions">
-        <vc-button type="button" variant="ghost" (click)="resetForm()">Limpar</vc-button>
-        <vc-button type="submit" [loading]="loading" [disabled]="loading">
-          {{ loading ? 'Salvando...' : 'Salvar ficha' }}
-        </vc-button>
+        @if (!readOnly) {
+          <vc-button type="button" variant="ghost" (click)="resetForm()">Restaurar</vc-button>
+          <vc-button type="submit" [loading]="loading" [disabled]="loading">
+            {{ loading ? 'Salvando...' : submitLabel }}
+          </vc-button>
+        }
       </div>
 
       <p class="error-banner" *ngIf="error">{{ error }}</p>

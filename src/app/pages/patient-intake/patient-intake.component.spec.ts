@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpErrorResponse } from '@angular/common/http';
+import { VcToastService } from '@vyracare/design-system';
 import { of, throwError } from 'rxjs';
 import { PatientIntakePageComponent } from './patient-intake.component';
 import { PatientService } from '../../services/patient.service';
@@ -7,6 +10,7 @@ import { PatientIntakePayload } from '../../models/patient-intake.model';
 
 describe('PatientIntakePageComponent', () => {
   let patientService: jest.Mocked<PatientService>;
+  const toast = { success: jest.fn(), error: jest.fn() };
 
   beforeEach(async () => {
     patientService = {
@@ -15,8 +19,12 @@ describe('PatientIntakePageComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [PatientIntakePageComponent, RouterTestingModule],
-      providers: [{ provide: PatientService, useValue: patientService }]
+      providers: [
+        { provide: PatientService, useValue: patientService },
+        { provide: VcToastService, useValue: toast }
+      ]
     }).compileComponents();
+    jest.clearAllMocks();
   });
 
   it('should create', () => {
@@ -25,7 +33,7 @@ describe('PatientIntakePageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle successful registration', () => {
+  it('should show success feedback and return to patients after registration', () => {
     const fixture = TestBed.createComponent(PatientIntakePageComponent);
     const component = fixture.componentInstance;
 
@@ -34,10 +42,8 @@ describe('PatientIntakePageComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -64,13 +70,15 @@ describe('PatientIntakePageComponent', () => {
     };
 
     patientService.registerPatient.mockReturnValue(of(void 0));
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.handleSubmit(payload);
 
     expect(patientService.registerPatient).toHaveBeenCalledWith(payload);
     expect((component as any).loading()).toBe(false);
-    expect((component as any).success()).toBe(true);
-    expect((component as any).error()).toBeNull();
+    expect(toast.success).toHaveBeenCalledWith('Paciente cadastrado', 'A ficha foi salva com sucesso.');
+    expect(navigateSpy).toHaveBeenCalledWith(['/pacientes']);
   });
 
   it('should handle failed registration', () => {
@@ -82,10 +90,8 @@ describe('PatientIntakePageComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -111,13 +117,15 @@ describe('PatientIntakePageComponent', () => {
       notes: ''
     };
 
-    patientService.registerPatient.mockReturnValue(throwError(() => new Error('fail')));
+    patientService.registerPatient.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 409 })));
 
     component.handleSubmit(payload);
 
     expect(patientService.registerPatient).toHaveBeenCalledWith(payload);
     expect((component as any).loading()).toBe(false);
-    expect((component as any).success()).toBe(false);
-    expect((component as any).error()).toBe('Falha ao salvar a ficha do paciente. Tente novamente.');
+    expect(toast.error).toHaveBeenCalledWith(
+      'Nao foi possivel cadastrar o paciente',
+      'Ja existe um paciente cadastrado com este CPF.'
+    );
   });
 });

@@ -3,10 +3,8 @@ export interface PatientIntakePayload {
   birthDate: string;
   gender: string;
   cpf: string;
-  rg?: string;
   email: string;
   phone: string;
-  whatsapp?: string;
   addressStreet: string;
   addressNumber: string;
   addressComplement?: string;
@@ -30,4 +28,38 @@ export interface PatientIntakePayload {
   pregnantOrBreastfeeding: boolean;
   consent: boolean;
   notes?: string;
+}
+
+export interface PostalCodeAddress {
+  postalCode: string;
+  street: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
+export interface Patient extends PatientIntakePayload {
+  id: string;
+  professionalNotes: PatientNote[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Dados que podem ser alterados por um administrador depois da abertura do prontuario. */
+export type PatientUpdatePayload = Omit<PatientIntakePayload, 'cpf' | 'skinType' | 'consent' | 'notes'>;
+
+export interface PatientNote {
+  id: string;
+  content: string;
+  procedureName?: string;
+  kind?: 'professional_note' | 'record_opened';
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface AddPatientNotePayload {
+  content: string;
+  procedureName?: string;
 }

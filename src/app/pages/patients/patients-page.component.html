@@ -1,0 +1,107 @@
+<main class="patients-page">
+  <nav class="breadcrumb"><a routerLink="/dashboard">Dashboard</a><span>/</span><span>Pacientes</span></nav>
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Gestao clinica</span>
+      <vc-heading [level]="1">Pacientes</vc-heading>
+      <vc-text [muted]="true">Consulte fichas, registre procedimentos e acompanhe o historico profissional.</vc-text>
+    </div>
+  </header>
+
+  <section class="table-card">
+    <div class="table-toolbar">
+      <div>
+        <vc-heading [level]="2">Pacientes cadastrados</vc-heading>
+        <vc-text [muted]="true">Localize uma ficha para consultar, editar ou registrar uma evolucao.</vc-text>
+      </div>
+      <a class="primary-action" routerLink="/pacientes/cadastro">Cadastrar paciente</a>
+    </div>
+    <vc-search class="search-row" id="patient-search" label="Buscar paciente" placeholder="Nome, telefone ou email" [action]="true" actionLabel="Buscar paciente" (search)="search($event)"></vc-search>
+
+    @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
+
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Paciente</th><th>Telefone</th><th>Email</th><th>Atualizacao</th><th>Acoes</th></tr></thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="5" class="empty">Carregando pacientes...</td></tr>
+          } @else if (patients().length === 0) {
+            <tr><td colspan="5" class="empty">Nenhum paciente encontrado.</td></tr>
+          } @else {
+            @for (patient of patients(); track patient.id) {
+              <tr>
+                <td data-label="Paciente"><strong>{{ patient.fullName }}</strong><small>{{ patient.cpf }}</small></td>
+                <td data-label="Telefone">{{ patient.phone }}</td>
+                <td data-label="Email">{{ patient.email }}</td>
+                <td data-label="Atualização">{{ patient.updatedAt | date:'dd/MM/yyyy' }}</td>
+                <td class="actions" data-label="Ações">
+                  <vc-tooltip text="Editar paciente">
+                    <vc-icon-button
+                      icon="pencil-square"
+                      ariaLabel="Editar paciente"
+                      variant="soft"
+                      [routerLink]="['/pacientes/editar', patient.id]"
+                    ></vc-icon-button>
+                  </vc-tooltip>
+                  <vc-tooltip text="Adicionar nota profissional">
+                    <vc-icon-button
+                      icon="journal-plus"
+                      ariaLabel="Adicionar nota profissional"
+                      variant="soft"
+                      (action)="openNote(patient)"
+                    ></vc-icon-button>
+                  </vc-tooltip>
+                  <vc-tooltip text="Consultar histórico profissional">
+                    <vc-icon-button
+                      icon="clock-history"
+                      ariaLabel="Consultar histórico profissional"
+                      variant="soft"
+                      (action)="openHistory(patient)"
+                    ></vc-icon-button>
+                  </vc-tooltip>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  @if (noteModalOpen()) {
+    <div class="modal-backdrop" (click)="closeNote()">
+      <form class="modal" [formGroup]="noteForm" (ngSubmit)="saveNote()" role="dialog" aria-modal="true" aria-labelledby="note-title" (click)="$event.stopPropagation()">
+        <vc-heading id="note-title" [level]="2">Adicionar nota</vc-heading>
+        <vc-text [muted]="true">{{ selectedPatient()?.fullName }}</vc-text>
+        <vc-input id="patient-note-procedure" label="Procedimento" placeholder="Procedimento realizado" formControlName="procedureName"></vc-input>
+        <vc-textarea id="patient-note-content" label="Nota profissional" [rows]="5" placeholder="Descreva o procedimento e as observacoes" formControlName="content" [required]="true" [error]="noteForm.controls.content.touched && noteForm.controls.content.invalid ? 'Informe a nota profissional.' : ''"></vc-textarea>
+        <div class="modal-actions modal-actions--split">
+          <vc-button type="button" variant="secondary" (click)="closeNote()">Cancelar</vc-button>
+          <vc-button type="submit" [loading]="savingNote()">Salvar nota</vc-button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (historyModalOpen()) {
+    <div class="modal-backdrop" (click)="closeHistory()">
+      <section class="modal history" role="dialog" aria-modal="true" aria-labelledby="history-title" (click)="$event.stopPropagation()">
+        <vc-heading id="history-title" [level]="2">Historico profissional</vc-heading>
+        <vc-text [muted]="true">{{ selectedPatient()?.fullName }}</vc-text>
+        <div class="history-list">
+          @if (notes().length === 0) { <p class="empty">Nenhuma nota adicionada.</p> }
+          @for (note of notes(); track note.id) {
+            <article>
+              <div><strong>{{ note.procedureName || 'Atendimento' }}</strong><time>{{ note.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
+              <p>{{ note.content }}</p>
+              <small>Registrado por {{ note.authorName }}</small>
+            </article>
+          }
+        </div>
+        <div class="modal-actions"><vc-button type="button" variant="secondary" (click)="closeHistory()">Fechar</vc-button></div>
+      </section>
+    </div>
+  }
+</main>

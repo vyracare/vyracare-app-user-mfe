@@ -75,24 +75,6 @@
   margin-bottom: 0.75rem;
 }
 
-.header-tag {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 14px 30px rgba(44, 56, 120, 0.1);
-
-  span {
-    font-size: 0.75rem;
-    color: var(--color-muted);
-  }
-
-  strong {
-    color: var(--color-text);
-  }
-}
 
 .page-content {
   display: grid;
@@ -193,14 +175,18 @@
     grid-template-columns: 1fr;
   }
 
-  .header-tag {
-    width: 100%;
-  }
 }
 
 @media (max-width: 720px) {
+  .patient-page { gap: 1rem; }
+  .breadcrumb { overflow-x: auto; white-space: nowrap; font-size: .78rem; }
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem;
+    border-radius: 16px;
   }
+  :host ::ng-deep .page-header vc-heading .vc-heading { font-size: 1.55rem; }
+  .page-content, .page-side { gap: 1rem; }
+  .side-card { padding: 1rem; }
 }

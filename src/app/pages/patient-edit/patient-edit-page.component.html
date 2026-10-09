@@ -1,0 +1,77 @@
+<main class="edit-page">
+  <nav class="breadcrumb"><a routerLink="/dashboard">Dashboard</a><span>/</span><a routerLink="/pacientes">Pacientes</a><span>/</span><span>Prontuário do paciente</span></nav>
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">Prontuario do paciente</span>
+      <vc-heading [level]="1">{{ patient()?.fullName || 'Ficha do paciente' }}</vc-heading>
+      <vc-text [muted]="true">
+        {{ isAdministrator ? 'Edite os dados cadastrais e clinicos.' : 'A ficha e somente leitura; voce pode registrar notas profissionais.' }}
+      </vc-text>
+    </div>
+  </header>
+
+  <div class="page-actions">
+    <vc-button type="button" variant="secondary" (click)="historyModalOpen.set(true)">Historico</vc-button>
+    <vc-button type="button" (click)="openNote()">Adicionar nota</vc-button>
+  </div>
+
+  @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
+  @if (success()) { <p class="message success" role="status">{{ success() }}</p> }
+  @if (loading()) {
+    <p class="loading">Carregando ficha...</p>
+  } @else if (patient(); as currentPatient) {
+    <vyracare-patient-intake-form
+      [initialValue]="formValue(currentPatient)"
+      [readOnly]="!isAdministrator"
+      [isEditMode]="true"
+      [loading]="saving()"
+      [error]="error() || null"
+      submitLabel="Salvar alteracoes"
+      (formSubmit)="update($event)"
+    ></vyracare-patient-intake-form>
+  }
+
+  @if (confirmationModalOpen()) {
+    <div class="modal-backdrop" (click)="cancelUpdate()">
+      <section class="modal confirmation" role="alertdialog" aria-modal="true" aria-labelledby="confirmation-title" (click)="$event.stopPropagation()">
+        <vc-heading id="confirmation-title" [level]="2">Confirmar alterações</vc-heading>
+        <vc-text>Deseja realmente salvar as alterações realizadas no prontuário?</vc-text>
+        <vc-text [muted]="true">CPF, tipo de pele, consentimento e notas profissionais serão preservados.</vc-text>
+        @if (error()) { <p class="message error" role="alert">{{ error() }}</p> }
+        <div class="modal-actions modal-actions--split">
+          <vc-button type="button" variant="secondary" [disabled]="saving()" (click)="cancelUpdate()">Cancelar</vc-button>
+          <vc-button type="button" [loading]="saving()" [disabled]="saving()" (click)="confirmUpdate()">
+            {{ saving() ? 'Salvando...' : 'Confirmar e salvar' }}
+          </vc-button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (noteModalOpen()) {
+    <div class="modal-backdrop" (click)="noteModalOpen.set(false)">
+      <form class="modal" [formGroup]="noteForm" (ngSubmit)="saveNote()" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <vc-heading [level]="2">Adicionar nota profissional</vc-heading>
+        <vc-input id="patient-edit-note-procedure" label="Procedimento" formControlName="procedureName"></vc-input>
+        <vc-textarea id="patient-edit-note-content" label="Nota" [rows]="5" formControlName="content" [required]="true" [error]="noteForm.controls.content.touched && noteForm.controls.content.invalid ? 'Informe a nota profissional.' : ''"></vc-textarea>
+        <div class="modal-actions modal-actions--split">
+          <vc-button type="button" variant="secondary" (click)="noteModalOpen.set(false)">Cancelar</vc-button>
+          <vc-button type="submit">Salvar nota</vc-button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (historyModalOpen()) {
+    <div class="modal-backdrop" (click)="historyModalOpen.set(false)">
+      <section class="modal history" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <vc-heading [level]="2">Historico profissional</vc-heading>
+        @if (notes().length === 0) { <p>Nenhuma nota adicionada.</p> }
+        @for (note of notes(); track note.id) {
+          <article><strong>{{ note.procedureName || 'Atendimento' }}</strong><time>{{ note.createdAt | date:'dd/MM/yyyy HH:mm' }}</time><p>{{ note.content }}</p><small>{{ note.authorName }}</small></article>
+        }
+        <div class="modal-actions"><vc-button type="button" variant="secondary" (click)="historyModalOpen.set(false)">Fechar</vc-button></div>
+      </section>
+    </div>
+  }
+</main>

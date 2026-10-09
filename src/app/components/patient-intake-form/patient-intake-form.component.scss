@@ -71,45 +71,7 @@
   gap: 1.25rem;
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--color-muted);
-
-  &.full {
-    grid-column: 1 / -1;
-  }
-
-  span {
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  input,
-  select,
-  textarea {
-    border: 1px solid rgba(90, 59, 231, 0.2);
-    border-radius: 12px;
-    padding: 0.75rem 0.9rem;
-    font-size: 0.95rem;
-    background: #fff;
-    color: var(--color-text);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(90, 59, 231, 0.15);
-    }
-
-    &.invalid {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px rgba(255, 108, 136, 0.18);
-    }
-  }
-}
+.full { grid-column: 1 / -1; }
 
 .toggle-grid {
   display: grid;
@@ -182,39 +144,6 @@
   color: var(--color-primary);
 }
 
-.ghost,
-.primary {
-  border: none;
-  border-radius: 999px;
-  padding: 0.65rem 1.4rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.ghost {
-  background: #f4f1ff;
-  color: var(--color-primary);
-}
-
-.primary {
-  background: linear-gradient(135deg, #6e4ef5, #5ac4ff);
-  color: #fff;
-  box-shadow: 0 10px 20px rgba(90, 59, 231, 0.25);
-}
-
-.ghost:hover,
-.primary:hover {
-  transform: translateY(-1px);
-}
-
-.primary:disabled {
-  cursor: default;
-  opacity: 0.7;
-  box-shadow: none;
-  transform: none;
-}
-
 .error-banner {
   margin: 1rem 0 0;
   padding: 0.75rem 1rem;
@@ -226,11 +155,24 @@
 
 @media (max-width: 720px) {
   .form-card {
-    padding: 1.5rem;
+    padding: 1rem;
+    border-radius: 16px;
   }
 
+  .form-grid, .toggle-grid { grid-template-columns: 1fr; gap: 1rem; }
+
   .form-actions {
-    flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  :host ::ng-deep .form-actions vc-button { min-width: 0; }
+  :host ::ng-deep .form-actions vc-button .vc-button__inner {
+    min-height: 2.75rem;
+    padding-inline: .85rem;
+    font-size: .875rem;
+    line-height: 1.2;
+    white-space: normal;
   }
 }

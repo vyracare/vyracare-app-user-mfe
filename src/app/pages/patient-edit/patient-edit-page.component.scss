@@ -1,0 +1,45 @@
+:host { display: block; }
+.edit-page { display: flex; flex-direction: column; gap: 2rem; width: 100%; color: var(--color-text); }
+.breadcrumb { display: flex; align-items: center; gap: .55rem; color: var(--color-muted); font-size: .9rem; }
+.breadcrumb a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+.page-header { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 1.5rem 1.75rem; border: 1px solid rgba(90,59,231,.12); border-radius: 20px; background: linear-gradient(135deg,rgba(90,59,231,.12),rgba(255,108,136,.12)); }
+.eyebrow { display: inline-flex; margin-bottom: .75rem; padding: .35rem .75rem; border-radius: 999px; background: rgba(255,255,255,.75); color: var(--color-primary); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+:host ::ng-deep .page-header .vc-heading { margin: 0 0 .35rem; color: var(--color-text); font-size: 2rem; line-height: 1.2; }
+:host ::ng-deep .page-header .vc-text { margin: 0; color: var(--color-muted); }
+.page-actions, .modal-actions { display: flex; justify-content: flex-end; gap: .75rem; }
+.message, .loading { padding: .8rem 1rem; border-radius: 12px; }
+.message.error { background: #fff0f2; color: #a12740; }
+.message.success { background: #ecfff5; color: #14724a; }
+.modal-backdrop { box-sizing: border-box; position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; overflow-y: auto; padding: 1rem; background: rgba(23,25,48,.52); }
+.modal { box-sizing: border-box; display: grid; gap: 1rem; width: min(560px,100%); max-width: 100%; max-height: 85vh; overflow-x: hidden; overflow-y: auto; padding: 1.5rem; border-radius: 20px; background: #fff; box-shadow: 0 30px 80px rgba(15,18,48,.3); }
+.modal > * { box-sizing: border-box; min-width: 0; }
+.modal.history { width: min(700px,100%); }
+.modal.confirmation { width: min(520px,100%); }
+.modal article { display: grid; grid-template-columns: 1fr auto; gap: .3rem 1rem; padding: 1rem; border-radius: 14px; background: #f8f7ff; }
+.modal article p, .modal article small { grid-column: 1 / -1; }
+.modal time, .modal small { color: var(--color-muted); font-size: .8rem; }
+@media (max-width: 720px) {
+  .edit-page { gap: 1rem; }
+  .breadcrumb { overflow-x: auto; white-space: nowrap; font-size: .78rem; }
+  .page-header { padding: 1rem; border-radius: 16px; }
+  :host ::ng-deep .page-header .vc-heading { font-size: 1.55rem; }
+  .page-header, .modal-actions { align-items: stretch; flex-direction: column; }
+  .page-actions, .modal-actions--split { align-items: center; flex-direction: row; justify-content: space-between; }
+  .page-actions { padding-inline: 1rem; }
+  :host ::ng-deep .page-actions vc-button,
+  :host ::ng-deep .modal-actions--split vc-button { min-width: 0; }
+  :host ::ng-deep .page-actions vc-button .vc-button__inner,
+  :host ::ng-deep .modal-actions--split vc-button .vc-button__inner {
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding-inline: .75rem;
+    font-size: .875rem;
+    line-height: 1.2;
+    white-space: normal;
+  }
+  .modal-backdrop { place-items: end center; padding: 0; }
+  .modal { width: 100%; max-height: 88dvh; padding: 1.25rem; border-radius: 20px 20px 0 0; }
+  :host ::ng-deep .modal .vc-heading { font-size: 1.5rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .modal article { grid-template-columns: 1fr; }
+  .modal article p, .modal article small { grid-column: auto; }
+}

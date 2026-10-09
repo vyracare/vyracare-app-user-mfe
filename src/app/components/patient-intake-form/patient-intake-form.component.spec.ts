@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { PatientIntakeFormComponent } from './patient-intake-form.component';
 import { PatientIntakePayload } from '../../models/patient-intake.model';
+import { of, throwError } from 'rxjs';
+import { PatientService } from '../../services/patient.service';
 
 describe('PatientIntakeFormComponent', () => {
+  const patientService = { getAddressByPostalCode: jest.fn() };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PatientIntakeFormComponent]
+      imports: [PatientIntakeFormComponent],
+      providers: [{ provide: PatientService, useValue: patientService }]
     }).compileComponents();
   });
 
@@ -13,6 +17,18 @@ describe('PatientIntakeFormComponent', () => {
     const fixture = TestBed.createComponent(PatientIntakeFormComponent);
     const component = fixture.componentInstance;
     expect(component).toBeTruthy();
+  });
+
+  it('should keep address fields disabled until a postal code is resolved', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+
+    expect(component.form.controls.addressZip.enabled).toBe(true);
+    expect(component.form.controls.addressStreet.disabled).toBe(true);
+    expect(component.form.controls.addressNumber.disabled).toBe(true);
+    expect(component.form.controls.addressComplement.disabled).toBe(true);
+    expect(component.form.controls.addressNeighborhood.disabled).toBe(true);
+    expect(component.form.controls.addressCity.disabled).toBe(true);
+    expect(component.form.controls.addressState.disabled).toBe(true);
   });
 
   it('should emit payload when form is valid', () => {
@@ -24,10 +40,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -53,6 +67,10 @@ describe('PatientIntakeFormComponent', () => {
       notes: ''
     };
 
+    patientService.getAddressByPostalCode.mockReturnValue(of({
+      postalCode: '01000000', street: 'Rua das Flores', neighborhood: 'Centro', city: 'Sao Paulo', state: 'SP'
+    }));
+    component.lookupPostalCode('01000-000');
     component.form.setValue(formValue);
 
     const emitSpy = jest.spyOn(component.formSubmit, 'emit');
@@ -82,10 +100,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '1992-04-18',
       gender: 'Feminino',
       cpf: '123.456.789-00',
-      rg: '12.345.678-9',
       email: 'maria@empresa.com',
       phone: '(11) 99999-9999',
-      whatsapp: '(11) 98888-7777',
       addressStreet: 'Rua das Flores',
       addressNumber: '123',
       addressComplement: 'Sala 21',
@@ -118,10 +134,8 @@ describe('PatientIntakeFormComponent', () => {
       birthDate: '',
       gender: '',
       cpf: '',
-      rg: '',
       email: '',
       phone: '',
-      whatsapp: '',
       addressStreet: '',
       addressNumber: '',
       addressComplement: '',
@@ -146,5 +160,100 @@ describe('PatientIntakeFormComponent', () => {
       consent: false,
       notes: ''
     });
+  });
+
+  it('should fill address after postal code lookup', () => {
+    patientService.getAddressByPostalCode.mockReturnValue(of({
+      postalCode: '01001001', street: 'Praca da Se', neighborhood: 'Se', city: 'Sao Paulo', state: 'SP'
+    }));
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.lookupPostalCode('01001-001');
+    expect(patientService.getAddressByPostalCode).toHaveBeenCalledWith('01001001');
+    expect(component.form.controls.addressStreet.value).toBe('Praca da Se');
+    expect(component.form.controls.addressNeighborhood.value).toBe('Se');
+    expect(component.form.controls.addressCity.value).toBe('Sao Paulo');
+    expect(component.form.controls.addressState.value).toBe('SP');
+    expect(component.form.controls.addressNumber.value).toBe('');
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    expect(component.form.controls.addressNumber.enabled).toBe(true);
+    expect(component.form.controls.addressComplement.enabled).toBe(true);
+    expect(component.postalCodeFeedback()).toContain('Correios');
+  });
+
+  it('should validate and handle postal code errors', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.lookupPostalCode('123');
+    expect(component.form.controls.addressZip.touched).toBe(true);
+    expect(component.form.controls.addressStreet.disabled).toBe(true);
+    patientService.getAddressByPostalCode.mockReturnValue(throwError(() => ({ status: 404 })));
+    component.lookupPostalCode('01001-001');
+    expect(component.postalCodeError()).toBe('CEP nao encontrado. Preencha o endereco manualmente.');
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    expect(component.form.controls.addressNumber.enabled).toBe(true);
+    expect(component.form.controls.addressState.enabled).toBe(true);
+  });
+
+  it('should allow manual address input when the postal code service is unavailable', () => {
+    patientService.getAddressByPostalCode.mockReturnValue(throwError(() => ({ status: 503 })));
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+
+    component.lookupPostalCode('01519-000');
+
+    expect(component.postalCodeError()).toContain('Preencha o endereco manualmente.');
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    expect(component.form.controls.addressNeighborhood.enabled).toBe(true);
+    expect(component.form.controls.addressCity.enabled).toBe(true);
+  });
+
+  it('should apply initial values, restore them and control read-only mode', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    const initial = {
+      ...component.form.getRawValue(),
+      fullName: 'Maria Silva',
+      cpf: '123',
+      addressZip: '01001-001',
+      addressStreet: 'Praca da Se',
+      addressNeighborhood: 'Se',
+      addressCity: 'Sao Paulo',
+      addressState: 'SP'
+    };
+    component.initialValue = initial;
+    component.readOnly = true;
+    component.ngOnChanges({ initialValue: {} as any, readOnly: {} as any });
+    expect(component.form.getRawValue().fullName).toBe('Maria Silva');
+    expect(component.form.disabled).toBe(true);
+
+    component.readOnly = false;
+    component.ngOnChanges({ readOnly: {} as any });
+    expect(component.form.enabled).toBe(true);
+    expect(component.form.controls.addressStreet.enabled).toBe(true);
+    component.form.patchValue({ fullName: 'Alterado' });
+    component.resetForm();
+    expect(component.form.getRawValue().fullName).toBe('Maria Silva');
+  });
+
+  it('should lock immutable record fields in edit mode', () => {
+    const component = TestBed.createComponent(PatientIntakeFormComponent).componentInstance;
+    component.initialValue = {
+      ...component.form.getRawValue(),
+      cpf: '123.456.789-00',
+      skinType: 'Mista',
+      consent: true,
+      notes: 'Nota original',
+      addressZip: '01001-001',
+      addressStreet: 'Praca da Se',
+      addressNeighborhood: 'Se',
+      addressCity: 'Sao Paulo',
+      addressState: 'SP'
+    };
+    component.isEditMode = true;
+
+    component.ngOnChanges({ initialValue: {} as any, isEditMode: {} as any });
+
+    expect(component.form.controls.fullName.enabled).toBe(true);
+    expect(component.form.controls.cpf.disabled).toBe(true);
+    expect(component.form.controls.skinType.disabled).toBe(true);
+    expect(component.form.controls.consent.disabled).toBe(true);
+    expect(component.form.controls.notes.disabled).toBe(true);
   });
 });
