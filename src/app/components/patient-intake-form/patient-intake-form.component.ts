@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, signal, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   VcButtonComponent,
@@ -22,7 +22,6 @@ import { PatientService } from '../../services/patient.service';
   selector: 'vyracare-patient-intake-form',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     VcButtonComponent,
     VcCheckboxComponent,
@@ -34,7 +33,7 @@ import { PatientService } from '../../services/patient.service';
     VcSelectComponent,
     VcTextComponent,
     VcTextareaComponent
-  ],
+],
   templateUrl: './patient-intake-form.component.html',
   styleUrl: './patient-intake-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

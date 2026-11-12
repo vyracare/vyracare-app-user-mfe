@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { PatientService } from './patient.service';
 import { environment } from '../../environments/environments';
@@ -11,7 +11,7 @@ describe('PatientService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PatientService, provideHttpClient(), provideHttpClientTesting()]
+      providers: [PatientService, provideHttpClient(withXhr()), provideHttpClientTesting()]
     });
 
     service = TestBed.inject(PatientService);
