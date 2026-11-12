@@ -227,7 +227,9 @@
         }
       </div>
 
-      <p class="error-banner" *ngIf="error">{{ error }}</p>
+      @if (error) {
+        <p class="error-banner">{{ error }}</p>
+      }
     </div>
   </fieldset>
 </form>
